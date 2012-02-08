@@ -105,7 +105,7 @@ Version:	%{javaver}.%{buildver}
 Release:	%{icedtea_version}.1
 Epoch:		0
 Summary:	OpenJDK Runtime Environment
-Group:		Development/Languages
+Group:		Development/Java
 
 License:	ASL 1.1 and ASL 2.0 and GPL+ and GPLv2 and GPLv2 with exceptions and LGPL+ and LGPLv2 and MPLv1.0 and MPLv1.1 and Public Domain and W3C
 URL:		http://openjdk.java.net/
@@ -425,7 +425,7 @@ The OpenJDK runtime environment.
 
 %package	devel
 Summary:	OpenJDK Development Environment
-Group:		Development/Tools
+Group:		Development/Java
 
 # Require base package.
 Requires:	%{name} = %{epoch}:%{version}-%{release}
@@ -448,7 +448,7 @@ The OpenJDK development tools.
 
 %package	demo
 Summary:	OpenJDK Demos
-Group:		Development/Languages
+Group:		Development/Java
 
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -457,7 +457,7 @@ The OpenJDK demos.
 
 %package	src
 Summary:	OpenJDK Source Bundle
-Group:		Development/Languages
+Group:		Development/Java
 
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -466,7 +466,7 @@ The OpenJDK source bundle.
 
 %package	javadoc
 Summary:	OpenJDK API Documentation
-Group:		Documentation
+Group:		Development/Java
 Requires:	jpackage-utils
 BuildArch:	noarch
 
