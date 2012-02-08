@@ -344,7 +344,7 @@ BuildRequires:	mercurial
 BuildRequires:	ant
 BuildRequires:	libxinerama-devel
 BuildRequires:	rhino
-BuildRequires:	lsb
+#BuildRequires:	lsb
 %if %{with gcjbootstrap}
 BuildRequires:	java-1.5.0-gcj-devel
 %else
