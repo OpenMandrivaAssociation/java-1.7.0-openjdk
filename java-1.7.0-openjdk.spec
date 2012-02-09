@@ -333,6 +333,7 @@ BuildRequires:	lcms2-devel
 BuildRequires:	x11-proto-devel
 BuildRequires:	libxi-devel
 BuildRequires:	libxp-devel
+BuildRequires:	libxrender-devel
 BuildRequires:	libxt-devel
 BuildRequires:	libxtst-devel
 BuildRequires:	jpeg-devel
