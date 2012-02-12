@@ -1,3 +1,9 @@
+%if %mdkversion >= 201200
+# rpmlint just sucks!!!
+%define _build_pkgcheck_set %{nil}
+%define _build_pkgcheck_srpm %{nil}
+%endif
+
 # If with gcjbootstrap use java-1.5.0-gcj-devel
 # If without gcjbootstrap use java-1.6.0-openjdk-devel
 %bcond_with	gcjbootstrap
@@ -102,7 +108,7 @@
 
 Name:		java-%{javaver}-%{origin}
 Version:	%{javaver}.%{buildver}
-Release:	%{icedtea_version}.1
+Release:	%{icedtea_version}.3
 Epoch:		0
 Summary:	OpenJDK Runtime Environment
 Group:		Development/Java
