@@ -108,7 +108,7 @@
 
 Name:		java-%{javaver}-%{origin}
 Version:	%{javaver}.%{buildver}
-Release:	%{icedtea_version}.3
+Release:	%{icedtea_version}.4
 Epoch:		0
 Summary:	OpenJDK Runtime Environment
 Group:		Development/Java
