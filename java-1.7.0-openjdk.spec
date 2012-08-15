@@ -367,7 +367,8 @@ BuildRequires:	ecj
 # Java Access Bridge for GNOME build requirements.
 BuildRequires:	at-spi-devel
 BuildRequires:	gawk
-BuildRequires:	libbonobo-devel
+# Compatibility with 2011 backports
+BuildRequires:	libbonobo
 BuildRequires:	pkgconfig >= 0.9.0
 BuildRequires:	x11-tools
 # PulseAudio build requirements.
