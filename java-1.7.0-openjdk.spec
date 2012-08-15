@@ -108,7 +108,7 @@
 
 Name:		java-%{javaver}-%{origin}
 Version:	%{javaver}.%{buildver}
-Release:	%{icedtea_version}.4
+Release:	%{icedtea_version}.5
 Epoch:		0
 Summary:	OpenJDK Runtime Environment
 Group:		Development/Java
@@ -335,7 +335,7 @@ BuildRequires:	alsa-lib-devel
 BuildRequires:	cups-devel
 BuildRequires:	desktop-file-utils
 BuildRequires:	giflib-devel
-BuildRequires:	lcms2-devel
+BuildRequires:	lcms-devel
 BuildRequires:	x11-proto-devel
 BuildRequires:	libxi-devel
 BuildRequires:	libxp-devel
@@ -395,7 +395,7 @@ BuildRequires:	systemtap
 BuildRequires:	jakarta-commons-logging
 
 Requires:	rhino
-Requires:	lcms2
+Requires:	lcms
 # Require /etc/pki/java/cacerts.
 Requires:	rootcerts-java
 # Require jpackage-utils for ant.
