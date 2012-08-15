@@ -335,7 +335,7 @@ BuildRequires:	alsa-lib-devel
 BuildRequires:	cups-devel
 BuildRequires:	desktop-file-utils
 BuildRequires:	giflib-devel
-BuildRequires:	lcms-devel
+BuildRequires:	lcms2-devel
 BuildRequires:	x11-proto-devel
 BuildRequires:	libxi-devel
 BuildRequires:	libxp-devel
@@ -395,7 +395,7 @@ BuildRequires:	systemtap
 BuildRequires:	jakarta-commons-logging
 
 Requires:	rhino
-Requires:	lcms
+Requires:	lcms2
 # Require /etc/pki/java/cacerts.
 Requires:	rootcerts-java
 # Require jpackage-utils for ant.
