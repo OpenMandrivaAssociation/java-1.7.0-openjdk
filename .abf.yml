@@ -1,0 +1,14 @@
+sources:
+  "class-rewriter.tar.gz:"	fcc167de17354efb6e52cb387eb3e7dbb0316b53
+  "desktop-files.tar.gz:"	a00b1c0e3771be7c3fcd2dad68f286d735a74b57
+  "generated-files.tar.gz:"	1c1ed29cbb052d9325b581c021be5cfea44b0d0b
+  "java-access-bridge-1.23.0.tar.bz2:"	aa2c61cc73bad1e1a09e8843f341270f70921dbf
+  "javac-wrapper:"	bb1f7d31cbf139cb01ecdb5b33a1c5c9ce981749
+  "mauve-2008-10-22.tar.gz:"	fa8c388e2beb24f5eaebe57677c9843ce6c39441
+  "mauve_tests:"	9292bbc82a4d077911983700a81ae0ac71ee6960
+  "nss.cfg:"	da5ce130f538c40a94ba4f40ddea643d5987c9e9
+  "openjdk-icedtea-2.0.tar.gz:"	b345d7e29703ebe1b2ae6d809a3c8c04699a26ae
+  "pulseaudio.tar.gz:"	f9654ff103245ab47495f4951f19fe7a79eb0b23
+  "README.src:"	8d60bcf2f842645b0a31f9efcd8330713491100e
+  "remove-intree-libraries.sh:"	4308f5d180288444794a50ac0c699e58fa10412f
+  "systemtap-tapset.tar.gz:"	2fe0aaa14af9b2c4511901dcf93ba8006ffa7229
