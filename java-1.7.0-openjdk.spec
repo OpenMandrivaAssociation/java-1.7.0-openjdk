@@ -166,6 +166,8 @@ Source12:	remove-intree-libraries.sh
 #but were needed asap in distribution. Those parches are then applied in loop
 Source13:	tmp-patches-java-1.7.0-openjdk-f17.tar.gz
 
+Source14:	%{name}.rpmlintrc
+
 # RPM/distribution specific patches
 
 # Allow TCK to pass with access bridge wired in
