@@ -12,3 +12,4 @@ sources:
   README.src: 8d60bcf2f842645b0a31f9efcd8330713491100e
   remove-intree-libraries.sh: 4308f5d180288444794a50ac0c699e58fa10412f
   systemtap-tapset.tar.gz: 2fe0aaa14af9b2c4511901dcf93ba8006ffa7229
+  openjdk-icedtea-2.3.6.tar.xz: 0ec33fd55036848fa8f572719974c3bfbd31a4c0

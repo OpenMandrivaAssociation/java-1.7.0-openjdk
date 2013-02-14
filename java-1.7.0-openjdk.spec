@@ -1,9 +1,3 @@
-%if %mdkversion >= 201200
-# rpmlint just sucks!!!
-%define _build_pkgcheck_set %{nil}
-%define _build_pkgcheck_srpm %{nil}
-%endif
-
 # If with gcjbootstrap use java-1.5.0-gcj-devel
 # If without gcjbootstrap use java-1.6.0-openjdk-devel
 %bcond_with	gcjbootstrap
@@ -16,7 +10,7 @@
 
 %define		openjdk_version		b147
 %define		openjdk_date		27_jun_2011
-%define		icedtea_version		2.0
+%define		icedtea_version		2.3.6
 %define		hg_tag			icedtea-%{icedtea_version}
 %define		access_version		1.23.0
 %define		mauvedate		2008-10-22
@@ -25,22 +19,22 @@
 %define		jit_arches		%{ix86} x86_64
 
 %ifarch x86_64
-    %define	archbuild		amd64
-    %define	archinstall		amd64
+%define	archbuild		amd64
+%define	archinstall		amd64
 %endif
 %ifarch %{ix86}
-    %define	archbuild		i586
-    %define	archinstall		i386
+%define	archbuild		i586
+%define	archinstall		i386
 %endif
 %ifnarch %{jit_arches}
-    %define	archbuild		%{_arch}
-    %define	archinstall		%{_arch}
+%define	archbuild		%{_arch}
+%define	archinstall		%{_arch}
 %endif
 
 %if %{with debug}
-    %define	debugbuild		debug_build
+%define	debugbuild		debug_build
 %else
-    %define	debugbuild		%{nil}
+%define	debugbuild		%{nil}
 %endif
 
 %define		buildoutputdir		openjdk/build/linux-%{archbuild}
@@ -48,9 +42,9 @@
 %bcond_without	pulseaudio
 
 %ifarch %{jit_arches}
-    %bcond_without	systemtap
+%bcond_without	systemtap
 %else
-    %bcond_with		systemtap
+%bcond_with		systemtap
 %endif
 
 # Convert an absolute path to a relative path.  Each symbolic link is
@@ -62,9 +56,9 @@
 # Hard-code libdir on 64-bit architectures to make the 64-bit JDK
 # simply be another alternative.
 %ifarch %{multilib_arches}
-    %define	archname		%{name}.%{_arch}
+%define	archname		%{name}.%{_arch}
 %else
-    %define	archname		%{name}
+%define	archname		%{name}
 %endif
 
 # Standard JPackage naming and versioning defines.
@@ -76,21 +70,21 @@
 # Standard JPackage directories and symbolic links.
 # Make 64-bit JDKs just another alternative on 64-bit architectures.
 %ifarch %{multilib_arches}
-    %define	sdklnk			java-%{javaver}-%{origin}.%{_arch}
-    %define	jrelnk			jre-%{javaver}-%{origin}.%{_arch}
-    %define	sdkdir			%{name}-%{version}.%{_arch}
+%define	sdklnk			java-%{javaver}-%{origin}.%{_arch}
+%define	jrelnk			jre-%{javaver}-%{origin}.%{_arch}
+%define	sdkdir			%{name}-%{version}.%{_arch}
 %else
-    %define	sdklnk			java-%{javaver}-%{origin}
-    %define	jrelnk			jre-%{javaver}-%{origin}
-    %define	sdkdir			%{name}-%{version}
+%define	sdklnk			java-%{javaver}-%{origin}
+%define	jrelnk			jre-%{javaver}-%{origin}
+%define	sdkdir			%{name}-%{version}
 %endif
 %define		jredir			%{sdkdir}/jre
 %define		sdkbindir		%{_jvmdir}/%{sdklnk}/bin
 %define		jrebindir		%{_jvmdir}/%{jrelnk}/bin
 %ifarch %{multilib_arches}
-    %define	jvmjardir		%{_jvmjardir}/%{name}-%{version}.%{_arch}
+%define	jvmjardir		%{_jvmjardir}/%{name}-%{version}.%{_arch}
 %else
-    %define	jvmjardir		%{_jvmjardir}/%{name}-%{version}
+%define	jvmjardir		%{_jvmjardir}/%{name}-%{version}
 %endif
 
 %ifarch %{jit_arches}
@@ -102,13 +96,13 @@
 # specific dir (note that systemtap will only pickup the tapset
 # for the primary arch for now). Systemtap uses the machine name
 # aka build_cpu as architecture specific directory name.
-    %define	tapsetroot		%{_datadir}/systemtap
-    %define	tapsetdir		%{tapsetroot}/tapset/%{_build_cpu}
+%define	tapsetroot		%{_datadir}/systemtap
+%define	tapsetdir		%{tapsetroot}/tapset/%{_build_cpu}
 %endif
 
 Name:		java-%{javaver}-%{origin}
 Version:	%{javaver}.%{buildver}
-Release:	%{icedtea_version}.6
+Release:	%{icedtea_version}.7
 Epoch:		0
 Summary:	OpenJDK Runtime Environment
 Group:		Development/Java
@@ -125,8 +119,8 @@ URL:		http://openjdk.java.net/
 # hg clone http://icedtea.classpath.org/hg/release/icedtea7-forest-%{icedtea_version}/langtools/ openjdk/langtools -r %{hg_tag}
 # find openjdk -name ".hg" -exec rm -rf '{}' \;
 # find openjdk -name ".hgtags" -exec rm -rf '{}' \;
-# tar czf openjdk-%{hg_tag}.tar.gz openjdk
-Source0:	openjdk-icedtea-%{icedtea_version}.tar.gz
+# tar Jzf openjdk-%{hg_tag}.tar.xz openjdk
+Source0:	openjdk-icedtea-%{icedtea_version}.tar.xz
 
 # Gnome access bridge
 Source1:	http://ftp.gnome.org/pub/GNOME/sources/java-access-bridge/1.23/java-access-bridge-%{access_version}.tar.bz2
@@ -168,6 +162,10 @@ Source11:	pulseaudio.tar.gz
 # Removed libraries that we link instead
 Source12:	remove-intree-libraries.sh
 
+#This archive contains all temporal patches, which are or will be soon upstreamed,
+#but were needed asap in distribution. Those parches are then applied in loop
+Source13:	tmp-patches-java-1.7.0-openjdk-f17.tar.gz
+
 # RPM/distribution specific patches
 
 # Allow TCK to pass with access bridge wired in
@@ -200,6 +198,19 @@ Patch8:		%{name}-glibc-name-clash.patch
 
 # Add rhino support
 Patch100:	rhino.patch
+
+# Type fixing for s390
+Patch101:	%{name}-bitmap.patch
+Patch102:	%{name}-size_t.patch
+ 
+# Patches for Arm
+Patch103:	%{name}-arm-fixes.patch
+
+# Patch for PPC/PPC64
+Patch104:	%{name}-ppc-zero-jdk.patch
+Patch105:	%{name}-ppc-zero-hotspot.patch
+
+Patch106:	%{name}-freetype-check-fix.patch
 
 #
 # Bootstrap patches (code with this is never shipped)
@@ -326,12 +337,14 @@ Patch300:	pulse-soundproperties.patch
 
 # SystemTap support
 # Workaround for RH613824
-Patch301:	systemtap-alloc-size-workaround.patch
 Patch302:	systemtap.patch
+
+#Mageia patches
+Patch400:	java-1.7.0-openjdk-fix-link.patch
 
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	alsa-lib-devel
+BuildRequires:	pkgconfig(alsa) 
 BuildRequires:	cups-devel
 BuildRequires:	desktop-file-utils
 BuildRequires:	giflib-devel
@@ -361,7 +374,7 @@ BuildRequires:	java-1.6.0-openjdk-devel
 BuildRequires:	x11-server-xvfb
 BuildRequires:	x11-font-type1
 BuildRequires:	x11-font-misc
-BuildRequires:	freetype2-devel >= 2.3.0
+BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	fontconfig
 BuildRequires:	ecj
 # Java Access Bridge for GNOME build requirements.
@@ -380,13 +393,18 @@ BuildRequires:	pulseaudio >= 0.9.11
 %ifnarch %{jit_arches}
 BuildRequires:	libffi-devel
 %endif
+BuildRequires:	zip
+BuildRequires:	xprop
 
 ExclusiveArch:	%{ix86} x86_64
 
 # cacerts build requirement.
 BuildRequires:	openssl
 # execstack build requirement.
-BuildRequires:	prelink
+# no prelink on ARM yet
+%ifnarch %{arm}
+BuildRequires: prelink
+%endif
 %ifarch %{jit_arches}
 #systemtap build requirement.
 BuildRequires:	systemtap
@@ -494,6 +512,7 @@ The OpenJDK API documentation.
 %setup -q -c -n %{name}
 %setup -q -n %{name} -T -D -a 3
 %setup -q -n %{name} -T -D -a 1
+%setup -q -n %{name} -T -D -a 13
 cp %{SOURCE2} .
 cp %{SOURCE4} .
 
@@ -507,7 +526,6 @@ cp %{SOURCE4} .
 
 # Add systemtap patches if enabled
 %if %{with systemtap}
-%patch301
 %patch302
 %endif
 
@@ -547,6 +565,17 @@ tar xzf %{SOURCE11}
 
 # Extract desktop files
 tar xzf %{SOURCE9}
+
+#apply all patches from tmp-patches
+TMPPATCHES=`ls tmp-patches/` ;
+for TP in $TMPPATCHES ; do
+echo "using patch $TP" ;
+ patch -p1 < tmp-patches/$TP ;
+ r=$? ;
+ if [ "$r" != "0" ] ; then
+ exit 5;
+ fi;
+done ;
 
 # If bootstrapping, apply additional patches
 %if %{with gcjbootstrap}
@@ -592,6 +621,7 @@ cp -a openjdk openjdk-boot
 %patch235
 %patch236
 
+%patch400 -p0
 %endif
 
 %build
@@ -600,6 +630,13 @@ export NUM_PROC=`/usr/bin/getconf _NPROCESSORS_ONLN 2> /dev/null || :`
 export NUM_PROC=${NUM_PROC:-1}
 
 # Build IcedTea and OpenJDK.
+%ifarch s390x sparc64 alpha ppc64
+export ARCH_DATA_MODEL=64
+%endif
+%ifarch alpha
+export CFLAGS="$CFLAGS -mieee"
+%endif
+
 patch -l -p0 < %{PATCH3}
 patch -l -p0 < %{PATCH4}
 
@@ -608,8 +645,24 @@ patch -l -p0 < %{PATCH5}
 patch -l -p0 < %{PATCH6}
 %endif
 
-patch -l -p0 < %{PATCH7}
-patch -l -p0 < %{PATCH8}
+# Type fixes for s390
+%ifarch s390 s390x
+ patch -l -p0 < %{PATCH101}
+#patch -l -p0 < %{PATCH102} # size_t patch disabled for now as it has conflicts
+%endif
+
+# Arm fixes
+%ifarch %{arm}
+patch -l -p0 < %{PATCH103}
+%endif
+
+patch -l -p0 < %{PATCH106}
+
+%ifarch ppc ppc64
+# PPC fixes
+patch -l -p0 < %{PATCH104}
+patch -l -p0 < %{PATCH105}
+%endif
 
 # Add a "-icedtea" tag to the version
 sed -i "s#BUILD_VARIANT_RELEASE)#BUILD_VARIANT_RELEASE)-icedtea#" openjdk/jdk/make/common/shared/Defs.gmk
@@ -703,6 +756,8 @@ chmod u+rwx generated.build
 
 export ALT_DROPS_DIR=$PWD/../drops
 export ALT_JDK_IMPORT_PATH="$PWD/../bootstrap/jdk1.6.0"
+export ALT_BOOTDIR="$PWD/../bootstrap/jdk1.6.0"
+export BOOTDIR="$PWD/../bootstrap/jdk1.6.0"
 
 # Set generic profile
 source jdk/make/jdk_generic_profile.sh
@@ -710,15 +765,31 @@ source jdk/make/jdk_generic_profile.sh
 make \
   ANT="/usr/bin/ant" \
   ALT_BOOTDIR="$PWD/../bootstrap/jdk1.6.0" \
+  BOOTDIR="$PWD/../bootstrap/jdk1.6.0" \
   ICEDTEA_RT="$PWD/../bootstrap/jdk1.6.0/jre/lib/rt.jar" \
   HOTSPOT_BUILD_JOBS="$NUM_PROC" \
   NO_DOCS="true" \
   RHINO_JAR="$PWD/../rhino/rhino.jar" \
-  GENSRCDIR="$PWD/generated.build" \
   DISABLE_NIMBUS="true" \
   XSLT="/usr/bin/xsltproc" \
   FT2_CFLAGS="-I/usr/include/freetype2 " \
-  FT2_LIBS="-lfreetype "
+  FT2_LIBS="-lfreetype " \
+  USE_SYSTEM_JPEG="true" \
+  JPEG_LIBS="-ljpeg" \
+  JPEG_CFLAGS="" \
+  USE_SYSTEM_ZLIB="true" \
+  ZLIB_LIBS="-lz" \
+  DEBUG_CLASSFILES="true" \
+  DEBUG_BINARIES="true" \
+%ifnarch %{jit_arches}
+  LIBFFI_CFLAGS="`pkg-config --cflags libffi` " \
+  LIBFFI_LIBS="-lffi " \
+  ZERO_BUILD="true" \
+  ZERO_LIBARCH="%{archbuild}" \
+  ZERO_ARCHDEF="%{archdef}" \
+  ZERO_ENDIANNESS="little" \
+%endif
+  %{nil}
 
 export JDK_TO_BUILD_WITH=$PWD/build/linux-%{archbuild}/j2sdk-image
 
@@ -735,8 +806,14 @@ pushd openjdk >& /dev/null
 export ALT_DROPS_DIR=$PWD/../drops
 export ALT_BOOTDIR="$JDK_TO_BUILD_WITH"
 
+# Save old umask as jdk_generic_profile overwrites it
+oldumask=`umask`
+
 # Set generic profile
 source jdk/make/jdk_generic_profile.sh
+
+# Restore old umask
+umask $oldumask
 
 make \
   ANT="/usr/bin/ant" \
@@ -750,10 +827,25 @@ make \
   GENSRCDIR="$PWD/generated.build" \
   FT2_CFLAGS="-I/usr/include/freetype2 " \
   FT2_LIBS="-lfreetype " \
+  DEBUG_CLASSFILES="true" \
   DEBUG_BINARIES="true" \
+  STRIP_POLICY="no_strip" \
+  ALT_BOOTDIR="$JDK_TO_BUILD_WITH" \
+%ifnarch %{jit_arches}
+  LIBFFI_CFLAGS="`pkg-config --cflags libffi` " \
+  LIBFFI_LIBS="-lffi " \
+  ZERO_BUILD="true" \
+  ZERO_LIBARCH="%{archbuild}" \
+  ZERO_ARCHDEF="%{archdef}" \
+  ZERO_ENDIANNESS="little" \
+%endif
   %{debugbuild}
 
 popd >& /dev/null
+
+%ifarch %{jit_arches}
+chmod 644 $(pwd)/%{buildoutputdir}/j2sdk-image/lib/sa-jdi.jar
+%endif
 
 export JAVA_HOME=$(pwd)/%{buildoutputdir}/j2sdk-image
 
@@ -776,7 +868,7 @@ pushd java-access-bridge-%{access_version}
   make
   export PATH=$OLD_PATH
   cp -a bridge/accessibility.properties $JAVA_HOME/jre/lib
-  cp -a gnome-java-bridge.jar $JAVA_HOME/jre/lib/ext
+  install -m644 gnome-java-bridge.jar $JAVA_HOME/jre/lib/ext
 popd
 
 # Copy tz.properties
@@ -1222,6 +1314,7 @@ exit 0
 %{_mandir}/man1/javah-%{name}.1*
 %{_mandir}/man1/javap-%{name}.1*
 %{_mandir}/man1/jconsole-%{name}.1*
+%{_mandir}/man1/jcmd-%{name}.1*
 %{_mandir}/man1/jdb-%{name}.1*
 %{_mandir}/man1/jhat-%{name}.1*
 %{_mandir}/man1/jinfo-%{name}.1*

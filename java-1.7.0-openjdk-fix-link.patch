@@ -1,0 +1,11 @@
+--- openjdk-boot/jdk/make/java/jli/Makefile~	2011-10-20 22:12:28.000000000 +0200
++++ openjdk-boot/jdk/make/java/jli/Makefile	2011-12-21 16:09:32.409985660 +0100
+@@ -111,7 +111,7 @@
+ 	# Note: its important to keep this order meaning -lc is the
+ 	# last library otherwise it could cause compatibility issues
+ 	# by pulling in SUNW_private symbols from libc
+-	LDLIBS = -ldl -lc
++	LDLIBS = -ldl -lc -lz
+ ifdef USE_SYSTEM_ZLIB
+ 	LDLIBS += $(ZLIB_LIBS)
+ endif

@@ -1,11 +1,25 @@
---- jsorig	2008-12-05 11:43:39.000000000 -0500
-+++ openjdk/jdk/src/share/lib/security/java.security	2008-12-05 11:43:45.000000000 -0500
-@@ -127,7 +127,7 @@
- # passed to checkPackageAccess unless the
- # corresponding RuntimePermission ("accessClassInPackage."+package) has
- # been granted.
--package.access=sun.,com.sun.xml.internal.ws.,com.sun.xml.internal.bind.,com.sun.imageio.
-+package.access=sun.,com.sun.xml.internal.ws.,com.sun.xml.internal.bind.,com.sun.imageio.,org.GNOME.Accessibility.,org.GNOME.Bonobo.
+diff -up openjdk/jdk/src/share/lib/security/java.security.sav openjdk/jdk/src/share/lib/security/java.security
+--- openjdk/jdk/src/share/lib/security/java.security.sav	2013-02-01 17:34:10.750939826 -0500
++++ openjdk/jdk/src/share/lib/security/java.security	2013-02-01 17:36:09.283198885 -0500
+@@ -129,7 +129,9 @@ package.access=sun.,\
+                com.sun.org.apache.xerces.internal.utils.,\
+                com.sun.org.apache.xalan.internal.utils.,\
+                com.sun.org.glassfish.external.,\
+-               com.sun.org.glassfish.gmbal.
++               com.sun.org.glassfish.gmbal.,\
++               org.GNOME.Accessibility.,\
++               org.GNOME.Bonobo.
  
  #
  # List of comma-separated packages that start with or equal this string
+@@ -147,7 +149,9 @@ package.definition=sun.,\
+                    com.sun.org.apache.xerces.internal.utils.,\
+                    com.sun.org.apache.xalan.internal.utils.,\
+                    com.sun.org.glassfish.external.,\
+-                   com.sun.org.glassfish.gmbal.
++                   com.sun.org.glassfish.gmbal.,\
++                   org.GNOME.Accessibility.,\
++                   org.GNOME.Bonobo.
+ 
+ #
+ # Determines whether this properties file can be appended to
