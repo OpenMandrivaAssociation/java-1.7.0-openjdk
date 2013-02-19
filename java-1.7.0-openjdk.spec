@@ -119,7 +119,7 @@ URL:		http://openjdk.java.net/
 # hg clone http://icedtea.classpath.org/hg/release/icedtea7-forest-%{icedtea_version}/langtools/ openjdk/langtools -r %{hg_tag}
 # find openjdk -name ".hg" -exec rm -rf '{}' \;
 # find openjdk -name ".hgtags" -exec rm -rf '{}' \;
-# tar Jzf openjdk-%{hg_tag}.tar.xz openjdk
+# tar Jcf openjdk-%{hg_tag}.tar.xz openjdk
 Source0:	openjdk-icedtea-%{icedtea_version}.tar.xz
 
 # Gnome access bridge
@@ -405,7 +405,7 @@ BuildRequires:	openssl
 # execstack build requirement.
 # no prelink on ARM yet
 %ifnarch %{arm}
-BuildRequires: prelink
+BuildRequires:	prelink
 %endif
 %ifarch %{jit_arches}
 #systemtap build requirement.
