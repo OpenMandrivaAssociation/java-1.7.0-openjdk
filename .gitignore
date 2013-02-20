@@ -2,12 +2,7 @@ class-rewriter.tar.gz
 desktop-files.tar.gz
 generated-files.tar.gz
 java-access-bridge-1.23.0.tar.bz2
-javac-wrapper
 mauve-2008-10-22.tar.gz
-mauve_tests
-nss.cfg
 openjdk-icedtea-2.0.tar.gz
 pulseaudio.tar.gz
-README.src
-remove-intree-libraries.sh
 systemtap-tapset.tar.gz
