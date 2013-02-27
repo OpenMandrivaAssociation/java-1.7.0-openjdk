@@ -1331,4 +1331,81 @@ exit 0
 %dir %{_jvmdir}/%{jredir}/lib/security
 %{_jvmdir}/%{jredir}/lib/security/cacerts
 %config(noreplace) %{_jvmdir}/%{jredir}/lib/security/java.policy
-%config(
+%config(noreplace) %{_jvmdir}/%{jredir}/lib/security/java.security
+%{_datadir}/icons/hicolor/*x*/apps/java-%{javaver}.png
+%{_mandir}/man1/java-%{name}.1*
+%{_mandir}/man1/keytool-%{name}.1*
+%{_mandir}/man1/orbd-%{name}.1*
+%{_mandir}/man1/pack200-%{name}.1*
+%{_mandir}/man1/rmid-%{name}.1*
+%{_mandir}/man1/rmiregistry-%{name}.1*
+%{_mandir}/man1/servertool-%{name}.1*
+%{_mandir}/man1/tnameserv-%{name}.1*
+%{_mandir}/man1/unpack200-%{name}.1*
+%{_jvmdir}/%{jredir}/lib/security/nss.cfg
+
+%files devel
+%doc %{buildoutputdir}/j2sdk-image/ASSEMBLY_EXCEPTION
+%doc %{buildoutputdir}/j2sdk-image/LICENSE
+%doc %{buildoutputdir}/j2sdk-image/THIRD_PARTY_README
+%dir %{_jvmdir}/%{sdkdir}/bin
+%dir %{_jvmdir}/%{sdkdir}/include
+%dir %{_jvmdir}/%{sdkdir}/lib
+%ifarch %{jit_arches}
+%dir %{_jvmdir}/%{sdkdir}/tapset
+%endif
+%{_jvmdir}/%{sdkdir}/bin/*
+%{_jvmdir}/%{sdkdir}/include/*
+%{_jvmdir}/%{sdkdir}/lib/*
+%ifarch %{jit_arches}
+%{_jvmdir}/%{sdkdir}/tapset/*.stp
+%endif
+%{_jvmdir}/%{sdklnk}
+%{_jvmjardir}/%{sdklnk}
+%{_datadir}/applications/*jconsole.desktop
+%{_datadir}/applications/*policytool.desktop
+%{_mandir}/man1/appletviewer-%{name}.1*
+%{_mandir}/man1/apt-%{name}.1*
+%{_mandir}/man1/extcheck-%{name}.1*
+%{_mandir}/man1/idlj-%{name}.1*
+%{_mandir}/man1/jar-%{name}.1*
+%{_mandir}/man1/jarsigner-%{name}.1*
+%{_mandir}/man1/javac-%{name}.1*
+%{_mandir}/man1/javadoc-%{name}.1*
+%{_mandir}/man1/javah-%{name}.1*
+%{_mandir}/man1/javap-%{name}.1*
+%{_mandir}/man1/jconsole-%{name}.1*
+%{_mandir}/man1/jcmd-%{name}.1*
+%{_mandir}/man1/jdb-%{name}.1*
+%{_mandir}/man1/jhat-%{name}.1*
+%{_mandir}/man1/jinfo-%{name}.1*
+%{_mandir}/man1/jmap-%{name}.1*
+%{_mandir}/man1/jps-%{name}.1*
+%{_mandir}/man1/jrunscript-%{name}.1*
+%{_mandir}/man1/jsadebugd-%{name}.1*
+%{_mandir}/man1/jstack-%{name}.1*
+%{_mandir}/man1/jstat-%{name}.1*
+%{_mandir}/man1/jstatd-%{name}.1*
+%{_mandir}/man1/native2ascii-%{name}.1*
+%{_mandir}/man1/policytool-%{name}.1*
+%{_mandir}/man1/rmic-%{name}.1*
+%{_mandir}/man1/schemagen-%{name}.1*
+%{_mandir}/man1/serialver-%{name}.1*
+%{_mandir}/man1/wsgen-%{name}.1*
+%{_mandir}/man1/wsimport-%{name}.1*
+%{_mandir}/man1/xjc-%{name}.1*
+%ifarch %{jit_arches}
+%{tapsetdir}/*.stp
+%endif
+
+%files demo -f %{name}-demo.files
+%doc %{buildoutputdir}/j2sdk-image/jre/LICENSE
+
+%files src
+%doc README.src
+%{_jvmdir}/%{sdkdir}/src.zip
+
+%files javadoc
+%doc %{_javadocdir}/%{name}
+%doc %{buildoutputdir}/j2sdk-image/jre/LICENSE
+
