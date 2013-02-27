@@ -8,3 +8,4 @@ sources:
   pulseaudio.tar.gz: f9654ff103245ab47495f4951f19fe7a79eb0b23
   systemtap-tapset.tar.gz: 2fe0aaa14af9b2c4511901dcf93ba8006ffa7229
   openjdk-icedtea-2.3.6.tar.xz: 0ec33fd55036848fa8f572719974c3bfbd31a4c0
+  openjdk-icedtea-2.3.7.tar.gz: 067f3f601edeef74d1d45fbdf89fd26298136475

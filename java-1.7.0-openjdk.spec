@@ -1,50 +1,92 @@
-# If with gcjbootstrap use java-1.5.0-gcj-devel
-# If without gcjbootstrap use java-1.6.0-openjdk-devel
-%bcond_with	gcjbootstrap
+# If gcjbootstrap is 1 OpenJDK is bootstrapped against
+# java-1.5.0-gcj-devel.  If gcjbootstrap is 0 OpenJDK is built against
+# java-1.6.0-openjdk-devel.
+%bcond_with gcjbootstrap
+%bcond_without bootstrap
+%bcond_with debug
+%bcond_with runtests
+
+%define _disable_ld_no_undefined 1
 
 # If debug is 1, OpenJDK is built with all debug info present.
-%bcond_with	debug
 
-# If runtests is 0 test suites will not be run.
-%define		runtests		0
+%define icedtea_version 2.3.6
+%define hg_tag icedtea-{icedtea_version}
 
-%define		openjdk_version		b147
-%define		openjdk_date		27_jun_2011
-%define		icedtea_version		2.3.6
-%define		hg_tag			icedtea-%{icedtea_version}
-%define		access_version		1.23.0
-%define		mauvedate		2008-10-22
-%define		multilib_arches		x86_64
+%define accessmajorver 1.23
+%define mauvedate 2008-10-22
+%define accessminorver 0
+%define accessver %{accessmajorver}.%{accessminorver}
+%define accessurl http://ftp.gnome.org/pub/GNOME/sources/java-access-bridge/
 
-%define		jit_arches		%{ix86} x86_64
+%define multilib_arches ppc64 sparc64 x86_64
 
-%ifarch x86_64
-%define	archbuild		amd64
-%define	archinstall		amd64
+%define jit_arches %{ix86} x86_64 sparcv9 sparc64
+
+%ifarch	x86_64
+%define	archbuild amd64
+%define	archinstall amd64
 %endif
-%ifarch %{ix86}
-%define	archbuild		i586
-%define	archinstall		i386
+%ifarch	ppc
+%define	archbuild ppc
+%define	archinstall ppc
+%endif
+%ifarch	ppc64
+%define	archbuild ppc64
+%define	archinstall ppc64
+%endif
+%ifarch	%ix86
+%define	archbuild i586
+%define	archinstall i386
+%endif
+%ifarch	ia64
+%define	archbuild ia64
+%define	archinstall ia64
+%endif
+%ifarch	s390
+%define	archbuild s390
+%define	archinstall s390
+%define	archdef S390
+%endif
+%ifarch	s390x
+%define	archbuild s390x
+%define	archinstall s390x
+%define	archdef S390
+%endif
+%ifarch	%{arm}
+%define	archbuild arm
+%define	archinstall arm
+%define	archdef ARM
+%endif
+# 32 bit sparc, optimized for v9
+%ifarch	sparcv9
+%define	archbuild sparc
+%define	archinstall sparc
+%endif
+# 64 bit sparc
+%ifarch	sparc64
+%define	archbuild sparcv9
+%define	archinstall sparcv9
 %endif
 %ifnarch %{jit_arches}
-%define	archbuild		%{_arch}
-%define	archinstall		%{_arch}
+%define	archbuild %{_arch}
+%define	archinstall %{_arch}
 %endif
 
 %if %{with debug}
-%define	debugbuild		debug_build
+%define debugbuild debug_build
 %else
-%define	debugbuild		%{nil}
+%define debugbuild %{nil}
 %endif
 
-%define		buildoutputdir		openjdk/build/linux-%{archbuild}
+%define buildoutputdir openjdk/build/linux-%{archbuild}
 
-%bcond_without	pulseaudio
+%bcond_without pulseaudio
 
 %ifarch %{jit_arches}
-%bcond_without	systemtap
+%bcond_without systemtap
 %else
-%bcond_with		systemtap
+%bcond_with systemtap
 %endif
 
 # Convert an absolute path to a relative path.  Each symbolic link is
@@ -56,35 +98,39 @@
 # Hard-code libdir on 64-bit architectures to make the 64-bit JDK
 # simply be another alternative.
 %ifarch %{multilib_arches}
-%define	archname		%{name}.%{_arch}
+%define syslibdir       %{_prefix}/lib64
+%define _libdir         %{_prefix}/lib
+%define archname        %{name}.%{_arch}
 %else
-%define	archname		%{name}
+%define syslibdir       %{_libdir}
+%define archname        %{name}
 %endif
 
 # Standard JPackage naming and versioning defines.
-%define		origin			openjdk
-%define		priority		17000
-%define		javaver			1.7.0
-%define		buildver		1
+%define origin          openjdk
+%define buildver        6
+# Keep priority on 6digits in case buildver>9
+%define priority 17000%{buildver}
+%define javaver         1.7.0
 
 # Standard JPackage directories and symbolic links.
 # Make 64-bit JDKs just another alternative on 64-bit architectures.
 %ifarch %{multilib_arches}
-%define	sdklnk			java-%{javaver}-%{origin}.%{_arch}
-%define	jrelnk			jre-%{javaver}-%{origin}.%{_arch}
-%define	sdkdir			%{name}-%{version}.%{_arch}
+%define sdklnk          java-%{javaver}-%{origin}.%{_arch}
+%define jrelnk          jre-%{javaver}-%{origin}.%{_arch}
+%define sdkdir          %{name}-%{version}.%{_arch}
 %else
-%define	sdklnk			java-%{javaver}-%{origin}
-%define	jrelnk			jre-%{javaver}-%{origin}
-%define	sdkdir			%{name}-%{version}
+%define sdklnk          java-%{javaver}-%{origin}
+%define jrelnk          jre-%{javaver}-%{origin}
+%define sdkdir          %{name}-%{version}
 %endif
-%define		jredir			%{sdkdir}/jre
-%define		sdkbindir		%{_jvmdir}/%{sdklnk}/bin
-%define		jrebindir		%{_jvmdir}/%{jrelnk}/bin
+%define jredir          %{sdkdir}/jre
+%define sdkbindir       %{_jvmdir}/%{sdklnk}/bin
+%define jrebindir       %{_jvmdir}/%{jrelnk}/bin
 %ifarch %{multilib_arches}
-%define	jvmjardir		%{_jvmjardir}/%{name}-%{version}.%{_arch}
+%define jvmjardir       %{_jvmjardir}/%{name}-%{version}.%{_arch}
 %else
-%define	jvmjardir		%{_jvmjardir}/%{name}-%{version}
+%define jvmjardir       %{_jvmjardir}/%{name}-%{version}
 %endif
 
 %ifarch %{jit_arches}
@@ -96,238 +142,247 @@
 # specific dir (note that systemtap will only pickup the tapset
 # for the primary arch for now). Systemtap uses the machine name
 # aka build_cpu as architecture specific directory name.
-%define	tapsetroot		%{_datadir}/systemtap
-%define	tapsetdir		%{tapsetroot}/tapset/%{_build_cpu}
+%define tapsetdir /usr/share/systemtap/tapset/%{_build_cpu}
 %endif
 
-Name:		java-%{javaver}-%{origin}
-Version:	%{javaver}.%{buildver}
-Release:	%{icedtea_version}.7
-Epoch:		0
-Summary:	OpenJDK Runtime Environment
-Group:		Development/Java
+# Prevent brp-java-repack-jars from being run.
+%define __jar_repack 0
 
-License:	ASL 1.1 and ASL 2.0 and GPL+ and GPLv2 and GPLv2 with exceptions and LGPL+ and LGPLv2 and MPLv1.0 and MPLv1.1 and Public Domain and W3C
-URL:		http://openjdk.java.net/
+Name:    java-%{javaver}-%{origin}
+Version: %{javaver}.%{buildver}
+Release: %mkrel %{icedtea_version}.1
+# java-1.5.0-ibm from jpackage.org set Epoch to 1 for unknown reasons,
+# and this change was brought into RHEL-4.  java-1.5.0-ibm packages
+# also included the epoch in their virtual provides.  This created a
+# situation where in-the-wild java-1.5.0-ibm packages provided "java =
+# 1:1.5.0".  In RPM terms, "1.6.0 < 1:1.5.0" since 1.6.0 is
+# interpreted as 0:1.6.0.  So the "java >= 1.6.0" requirement would be
+# satisfied by the 1:1.5.0 packages.  Thus we need to set the epoch in
+# JDK package >= 1.6.0 to 1, and packages referring to JDK virtual
+# provides >= 1.6.0 must specify the epoch, "java >= 1:1.6.0".
+Epoch:   1
+Summary: OpenJDK Runtime Environment
+Group:   Development/Java
 
-# hg clone http://icedtea.classpath.org/hg/release/icedtea7-forest-%{icedtea_version}/ openjdk -r %{hg_tag}
-# hg clone http://icedtea.classpath.org/hg/release/icedtea7-forest-%{icedtea_version}/corba/ openjdk/corba -r %{hg_tag}
-# hg clone http://icedtea.classpath.org/hg/release/icedtea7-forest-%{icedtea_version}/hotspot/ openjdk/hotspot -r %{hg_tag}
-# hg clone http://icedtea.classpath.org/hg/release/icedtea7-forest-%{icedtea_version}/jaxp/ openjdk/jaxp -r %{hg_tag}
-# hg clone http://icedtea.classpath.org/hg/release/icedtea7-forest-%{icedtea_version}/jaxws/ openjdk/jaxws -r %{hg_tag}
-# hg clone http://icedtea.classpath.org/hg/release/icedtea7-forest-%{icedtea_version}/jdk/ openjdk/jdk -r %{hg_tag}
-# hg clone http://icedtea.classpath.org/hg/release/icedtea7-forest-%{icedtea_version}/langtools/ openjdk/langtools -r %{hg_tag}
+License:  ASL 1.1 and ASL 2.0 and GPL+ and GPLv2 and GPLv2 with exceptions and LGPL+ and LGPLv2 and MPLv1.0 and MPLv1.1 and Public Domain and W3C
+URL:      http://openjdk.java.net/
+
+#head
+#REPO=http://icedtea.classpath.org/hg/icedtea7-forest
+#current release
+#REPO=http://icedtea.classpath.org/hg/release/icedtea7-forest-2.3
+# hg clone $REPO/ openjdk -r %{hg_tag}
+# hg clone $REPO/corba/ openjdk/corba -r %{hg_tag}
+# hg clone $REPO/hotspot/ openjdk/hotspot -r %{hg_tag}
+# hg clone $REPO/jaxp/ openjdk/jaxp -r %{hg_tag}
+# hg clone $REPO/jaxws/ openjdk/jaxws -r %{hg_tag}
+# hg clone $REPO/jdk/ openjdk/jdk -r %{hg_tag}
+# hg clone $REPO/langtools/ openjdk/langtools -r %{hg_tag}
 # find openjdk -name ".hg" -exec rm -rf '{}' \;
-# find openjdk -name ".hgtags" -exec rm -rf '{}' \;
-# tar Jcf openjdk-%{hg_tag}.tar.xz openjdk
-Source0:	openjdk-icedtea-%{icedtea_version}.tar.xz
+# tar czf openjdk-icedtea-%{icedtea_version}.tar.gz openjdk
+Source0:  openjdk-icedtea-%{icedtea_version}.tar.gz
 
 # Gnome access bridge
-Source1:	http://ftp.gnome.org/pub/GNOME/sources/java-access-bridge/1.23/java-access-bridge-%{access_version}.tar.bz2
+# Download-able from accessurl, md5 hash supported
+Source1:  %{accessurl}%{accessmajorver}/java-access-bridge-%{accessver}.tar.bz2
 
 # README file
-Source2:	README.src
-
-# Mauve test suite
-# FIXME: Is this applicable for 7?
-Source3:	mauve-%{mauvedate}.tar.gz
-Source4:	mauve_tests
+# This source is under maintainer's/java-team's control
+Source2:  README.src
 
 # javac wrapper (used during bootstrap to strip what ecj doesn't support)
-Source5:	javac-wrapper
+# This source is under manual control of maintainer/java-team
+Source3: javac-wrapper
+
+# Sources 6-12 are taken from hg clone http://icedtea.classpath.org/hg/icedtea7
+# Unless said differently, there is directory with required sources which should be enough to pack/rename
 
 # Auto-generated files (used only in bootstrap)
 # To reproduce: 
 # build OpenJDK7 tarball above with any JDK
 # mv generated.build generated
 # tar czf generated-files.tar.gz generated
-Source6:	generated-files.tar.gz
+Source4: generated-files.tar.gz
 
-# Class rewrite to rewrite rhino heirarchy
-Source7:	class-rewriter.tar.gz
+# Class rewrite to rewrite rhino hierarchy
+Source5: class-rewriter.tar.gz
 
 # Systemtap tapsets. Zipped up to keep it small.
-Source8:	systemtap-tapset.tar.gz
+Source6: systemtap-tapset.tar.gz
 
 # .desktop files. Zipped up to keep it small.
-Source9:	desktop-files.tar.gz
+Source7: desktop-files.tar.gz
 
 # nss configuration file
-Source10:	nss.cfg
+Source8: nss.cfg
 
 # FIXME: Taken from IcedTea snapshot 877ad5f00f69, but needs to be moved out
 # hg clone -r 877ad5f00f69 http://icedtea.classpath.org/hg/icedtea7
-Source11:	pulseaudio.tar.gz
+Source9: pulseaudio.tar.gz
 
 # Removed libraries that we link instead
-Source12:	remove-intree-libraries.sh
+Source10: remove-intree-libraries.sh
 
 #This archive contains all temporal patches, which are or will be soon upstreamed,
 #but were needed asap in distribution. Those parches are then applied in loop
-Source13:	tmp-patches-java-1.7.0-openjdk-f17.tar.gz
+Source11: tmp-patches-java-1.7.0-openjdk-f17.tar.gz
 
-Source14:	%{name}.rpmlintrc
+# http://icedtea.classpath.org/hg/release/icedtea7-forest-2.1
+# hg tag: icedtea-2.1.5
+Source100: openjdk-icedtea-2.1.6.tar.gz
 
 # RPM/distribution specific patches
 
 # Allow TCK to pass with access bridge wired in
-Patch1:		java-1.7.0-openjdk-java-access-bridge-tck.patch
+Patch1:   java-1.7.0-openjdk-java-access-bridge-tck.patch
 
 # Adjust idlj compilation switches to match what system idlj supports
-Patch2:		java-1.7.0-openjdk-java-access-bridge-idlj.patch
+Patch2:   java-1.7.0-openjdk-java-access-bridge-idlj.patch
 
 # Disable access to access-bridge packages by untrusted apps
-Patch3:		java-1.7.0-openjdk-java-access-bridge-security.patch
+Patch3:   java-1.7.0-openjdk-java-access-bridge-security.patch
 
 # Ignore AWTError when assistive technologies are loaded 
-Patch4:		java-1.7.0-openjdk-accessible-toolkit.patch
+Patch4:   java-1.7.0-openjdk-accessible-toolkit.patch
 
 # Build docs even in debug
-Patch5:		java-1.7.0-openjdk-debugdocs.patch
+Patch5:   java-1.7.0-openjdk-debugdocs.patch
 
 # Add debuginfo where missing
-Patch6:		%{name}-debuginfo.patch
-
-# Fix bug in jdk_generic_profile.sh
-Patch7:		%{name}-system-zlib.patch
-
-# Patch to fix glibc name clash
-Patch8:		%{name}-glibc-name-clash.patch
+Patch6:   %{name}-debuginfo.patch
 
 #
 # OpenJDK specific patches
 #
 
-# Add rhino support
-Patch100:	rhino.patch
+Patch100: rhino.patch
 
 # Type fixing for s390
-Patch101:	%{name}-bitmap.patch
-Patch102:	%{name}-size_t.patch
- 
+Patch101: %{name}-bitmap.patch
+Patch102: %{name}-size_t.patch
+
 # Patches for Arm
-Patch103:	%{name}-arm-fixes.patch
+Patch103: %{name}-arm-fixes.patch
 
 # Patch for PPC/PPC64
-Patch104:	%{name}-ppc-zero-jdk.patch
-Patch105:	%{name}-ppc-zero-hotspot.patch
+Patch104: %{name}-ppc-zero-jdk.patch
+Patch105: %{name}-ppc-zero-hotspot.patch
 
-Patch106:	%{name}-freetype-check-fix.patch
-
+Patch106: %{name}-freetype-check-fix.patch
 #
 # Bootstrap patches (code with this is never shipped)
 #
 
 # Explicitly set javac, so that the bootstrap version is used
-Patch200:	bootstrap-ant-javac.patch
+Patch200: bootstrap-ant-javac.patch
 
 # Adjusted generated sources path to use prebuilt ones
-Patch201:	bootstrap-corba-defs.patch
+Patch201: bootstrap-corba-defs.patch
 
 # Do not use idlj to generate sources, as we use prebuilt ones
-Patch202:	bootstrap-corba-idlj.patch
+Patch202: bootstrap-corba-idlj.patch
 
 # Disable decending into sources dir for generation
-Patch203:	bootstrap-corba-no-gen.patch
+Patch203: bootstrap-corba-no-gen.patch
 
 # Explicitly compile ORB.java
-Patch204:	bootstrap-corba-orb.patch
+Patch204: bootstrap-corba-orb.patch
 
 # Don't build demos in bootstrap
-Patch205:	bootstrap-demos.patch
+Patch205: bootstrap-demos.patch
 
 # Change hex constants to be numbers instead of 0x... so that ecj can compile them right
-Patch206:	bootstrap-ecj-fphexconstants.patch
+Patch206: bootstrap-ecj-fphexconstants.patch
 
 # Adjust opt flags to remove what ecj doesn't support
-Patch207:	bootstrap-ecj-opts.patch
+Patch207: bootstrap-ecj-opts.patch
 
 # use pre-generated font config files
-Patch208:	bootstrap-fontconfig.patch
+Patch208: bootstrap-fontconfig.patch
 
 # Don't write auto-generation message in bootstrap
-Patch209:	bootstrap-generated-comments.patch
+Patch209: bootstrap-generated-comments.patch
 
 # Adjust bootclasspath to match what ecj has
-Patch210:	bootstrap-xbootclasspath.patch
+Patch210: bootstrap-xbootclasspath.patch
 
 # Wire in icedtea rt.jar (FIXME: name needs update, kept same for now to match icedtea name)
-Patch211:	bootstrap-icedteart.patch
+Patch211: bootstrap-icedteart.patch
 
 # Wire in custom compiles rt classes
-Patch212:	bootstrap-jar.patch
+Patch212: bootstrap-jar.patch
 
 # Compile inner opengl class explicitly
-Patch213:	bootstrap-javah.patch
+Patch213: bootstrap-javah.patch
 
 # Disable ct.sym creation for bootstrap
-Patch214:	bootstrap-symbols.patch
+Patch214: bootstrap-symbols.patch
 
 # Disable icon generation for bootstrap
-Patch215:	bootstrap-tobin.patch
+Patch215: bootstrap-tobin.patch
 
 # Don't run test_gamma
-Patch216:	bootstrap-test_gamma.patch
+Patch216: bootstrap-test_gamma.patch
 
 # Disable requirement of module_lib path which bootstrap java_home doesn't have
-Patch217:	bootstrap-tools.jar.patch
+Patch217: bootstrap-tools.jar.patch
 
 # Allow -J opts to jar only if jar knows of them
-Patch218:	bootstrap-jopt.patch
+Patch218: bootstrap-jopt.patch
 
 # Explicitly add jaxp classes to classpath
-Patch219:	bootstrap-jaxp-dependency.patch
+Patch219: bootstrap-jaxp-dependency.patch
 
 # Don't fork when generating stubs
-Patch220:	bootstrap-genstubs-nofork.patch
+Patch220: bootstrap-genstubs-nofork.patch
 
 # Remove dependency on ProcessBuilder which is package private to Oracle implementation
-Patch221:	bootstrap-break-processbuilder-dependency.patch
+Patch221: bootstrap-break-processbuilder-dependency.patch
 
 # Allow to build with 1.5
-Patch222:	bootstrap-revert-6973616.patch
+Patch222: bootstrap-revert-6973616.patch
 
 # Avoid trying to load system zone info provider and failing
-Patch223:	bootstrap-revert-6941137.patch
+Patch223: bootstrap-revert-6941137.patch
 
 # Replace usage of string switch with if/elseif/else
-Patch224:	bootstrap-ecj-stringswitch.patch
+Patch224: bootstrap-ecj-stringswitch.patch
 
 # Allow langtools to use older jdk
-Patch225:	bootstrap-langtools-force-old-jdk.patch
+Patch225: bootstrap-langtools-force-old-jdk.patch
 
 # Access JDK sources and classes from langtools build
-Patch226:	bootstrap-corba-dependencies.patch
+Patch226: bootstrap-corba-dependencies.patch
 
 # Access langtools classes for Javadoc
-Patch227:	bootstrap-jaxws-langtools-dependency.patch
+Patch227: bootstrap-jaxws-langtools-dependency.patch
 
 # Access JDK sources for com.sun.net.httpserver
-Patch228:	bootstrap-jaxws-jdk-dependency.patch
+Patch228: bootstrap-jaxws-jdk-dependency.patch
 
 # Access JDK and generated sources to build servicability agent
-Patch229:	bootstrap-hotspot-jdk-dependency.patch
+Patch229: bootstrap-hotspot-jdk-dependency.patch
 
 # Remove use of multi-catch and replace with regular multi-level catch
-Patch230:	bootstrap-ecj-multicatch.patch
+Patch230: bootstrap-ecj-multicatch.patch
 
 # Remove use of try-with-resources and replace with manual close
-Patch231:	bootstrap-ecj-trywithresources.patch
+Patch231: bootstrap-ecj-trywithresources.patch
 
 # Disable auto-boxing and manally cast
-Patch232:	bootstrap-ecj-autoboxing.patch
+Patch232: bootstrap-ecj-autoboxing.patch
 
 # Use custom xslt processor
-Patch233:	bootstrap-xsltproc.patch
+Patch233: bootstrap-xsltproc.patch
 
 # Use constants from interface rather than impl
-Patch234:	bootstrap-pr40188.patch
+Patch234: bootstrap-pr40188.patch
 
 # Remove use of diamond operator and replace with manual
-Patch235:	bootstrap-ecj-diamond.patch
+Patch235: bootstrap-ecj-diamond.patch
 
 # Adjust javah switches to only use what bootstrap version supports
-Patch236:	bootstrap-javah-xbootclasspath.patch
+Patch236: bootstrap-javah-xbootclasspath.patch
 
 #
 # Optional component packages
@@ -335,188 +390,198 @@ Patch236:	bootstrap-javah-xbootclasspath.patch
 
 # Make the ALSA based mixer the default when building with the pulseaudio based
 # mixer
-Patch300:	pulse-soundproperties.patch
+Patch300: pulse-soundproperties.patch
 
 # SystemTap support
 # Workaround for RH613824
-Patch302:	systemtap.patch
+Patch302: systemtap.patch
 
 #Mageia patches
-Patch400:	java-1.7.0-openjdk-fix-link.patch
+Patch400: java-1.7.0-openjdk-fix-link.patch
 
-BuildRequires:	autoconf
-BuildRequires:	automake
-BuildRequires:	pkgconfig(alsa) 
-BuildRequires:	cups-devel
-BuildRequires:	desktop-file-utils
-BuildRequires:	giflib-devel
-BuildRequires:	lcms2-devel
-BuildRequires:	x11-proto-devel
-BuildRequires:	libxi-devel
-BuildRequires:	libxp-devel
-BuildRequires:	libxrender-devel
-BuildRequires:	libxt-devel
-BuildRequires:	libxtst-devel
-BuildRequires:	jpeg-devel
-BuildRequires:	png-devel
-BuildRequires:	wget
-BuildRequires:	xalan-j2
-BuildRequires:	xerces-j2
-#BuildRequires:	mercurial
-BuildRequires:	ant
-BuildRequires:	libxinerama-devel
-BuildRequires:	rhino
-BuildRequires:	lsb
+BuildRequires: autoconf
+BuildRequires: automake
+BuildRequires: pkgconfig(alsa)
+BuildRequires: cups-devel
+BuildRequires: desktop-file-utils
+BuildRequires: giflib-devel
+BuildRequires: lcms2-devel
+BuildRequires: x11-proto-devel
+BuildRequires: libxi-devel
+BuildRequires: libxp-devel
+BuildRequires: libxrender-devel
+BuildRequires: libxt-devel
+BuildRequires: libxtst-devel
+BuildRequires: jpeg-devel
+BuildRequires: png-devel
+BuildRequires: wget
+BuildRequires: xalan-j2
+BuildRequires: xerces-j2
+#BuildRequires: mercurial
+BuildRequires: ant
+BuildRequires: libxinerama-devel
+BuildRequires: rhino
+BuildRequires: lsb
+%if %{with bootstrap}
 %if %{with gcjbootstrap}
-BuildRequires:	java-1.5.0-gcj-devel
+BuildRequires: java-1.5.0-gcj-devel
+BuildRequires: libstdc++-static-devel
 %else
-BuildRequires:	java-1.6.0-openjdk-devel
-%endif
-# Mauve build requirements.
-BuildRequires:	x11-server-xvfb
-BuildRequires:	x11-font-type1
-BuildRequires:	x11-font-misc
-BuildRequires:	pkgconfig(freetype2)
-BuildRequires:	fontconfig
-BuildRequires:	ecj
+BuildRequires: java-1.6.0-openjdk-devel
+%endif # gcjbootstrap
+%else
+BuildRequires: java-1.6.0-openjdk-devel
+%endif #bootstrap
+BuildRequires: x11-server-xvfb
+BuildRequires: x11-font-type1
+BuildRequires: x11-font-misc
+BuildRequires: pkgconfig(freetype2)
+BuildRequires: fontconfig
+BuildRequires: ecj
+BuildRequires: fontconfig
 # Java Access Bridge for GNOME build requirements.
-BuildRequires:	at-spi-devel
-BuildRequires:	gawk
-# Compatibility with 2011 backports
-BuildRequires:	libbonobo
-BuildRequires:	pkgconfig >= 0.9.0
-BuildRequires:	x11-tools
+BuildRequires: at-spi-devel
+BuildRequires: gawk
+BuildRequires: pkgconfig >= 0.9.0
+BuildRequires: pkgconfig(zlib)
+BuildRequires: xsltproc
 # PulseAudio build requirements.
 %if %{with pulseaudio}
-BuildRequires:	pulseaudio-devel >= 0.9.11
-BuildRequires:	pulseaudio >= 0.9.11
+BuildRequires: pulseaudio-devel >= 0.9.11
+BuildRequires: pulseaudio >= 0.9.11
 %endif
 # Zero-assembler build requirement.
 %ifnarch %{jit_arches}
-BuildRequires:	libffi-devel
+BuildRequires: libffi-devel
 %endif
-BuildRequires:	zip
-BuildRequires:	xprop
+Buildrequires: zip
+Buildrequires: xprop
 
-ExclusiveArch:	%{ix86} x86_64
+#ExclusiveArch: x86_64 i686
 
 # cacerts build requirement.
-BuildRequires:	openssl
+BuildRequires: openssl
 # execstack build requirement.
 # no prelink on ARM yet
 %ifnarch %{arm}
-BuildRequires:	prelink
+BuildRequires: prelink
 %endif
 %ifarch %{jit_arches}
 #systemtap build requirement.
-BuildRequires:	systemtap
+BuildRequires: systemtap
 %endif
-# visualvm build requirements.
-BuildRequires:	jakarta-commons-logging
 
-Requires:	rhino
-Requires:	lcms2
+Requires: rhino
+Requires: lcms2
+#Requires: libjpeg = 6b
 # Require /etc/pki/java/cacerts.
-Requires:	rootcerts-java
+Requires: rootcerts-java
 # Require jpackage-utils for ant.
-Requires:	jpackage-utils >= 1.7.3-1jpp.2
+Requires: jpackage-utils >= 1.7.3-1jpp.2
 # Require zoneinfo data provided by tzdata-java subpackage.
-Requires:	tzdata-java
+Requires: tzdata-java
 # Post requires alternatives to install tool alternatives.
-Requires(post):	update-alternatives
+Requires(post):   %{_sbindir}/alternatives
 # Postun requires alternatives to uninstall tool alternatives.
-Requires(postun): update-alternatives
+Requires(postun): %{_sbindir}/alternatives
 
 # Standard JPackage base provides.
-Provides:	jre-%{javaver}-%{origin} = %{epoch}:%{version}-%{release}
-Provides:	jre-%{origin} = %{epoch}:%{version}-%{release}
-Provides:	jre-%{javaver} = %{epoch}:%{version}-%{release}
-Provides:	java-%{javaver} = %{epoch}:%{version}-%{release}
-Provides:	jre = %{javaver}
-Provides:	java-%{origin} = %{epoch}:%{version}-%{release}
-Provides:	java = %{epoch}:%{javaver}
+Provides: jre-%{javaver}-%{origin} = %{epoch}:%{version}-%{release}
+Provides: jre-%{origin} = %{epoch}:%{version}-%{release}
+Provides: jre-%{javaver} = %{epoch}:%{version}-%{release}
+Provides: java-%{javaver} = %{epoch}:%{version}-%{release}
+Provides: jre = %{javaver}
+Provides: java-%{origin} = %{epoch}:%{version}-%{release}
+Provides: java = %{epoch}:%{javaver}
+
+# Obsolete older 1.6 packages as it cannot use the new bytecode
+Obsoletes: java-1.6.0-openjdk
+Obsoletes: java-1.6.0-openjdk-demo
+Obsoletes: java-1.6.0-openjdk-devel
+Obsoletes: java-1.6.0-openjdk-javadoc
+Obsoletes: java-1.6.0-openjdk-src
+
 # Standard JPackage extensions provides.
-Provides:	jndi = %{epoch}:%{version}
-Provides:	jndi-ldap = %{epoch}:%{version}
-Provides:	jndi-cos = %{epoch}:%{version}
-Provides:	jndi-rmi = %{epoch}:%{version}
-Provides:	jndi-dns = %{epoch}:%{version}
-Provides:	jaas = %{epoch}:%{version}
-Provides:	jsse = %{epoch}:%{version}
-Provides:	jce = %{epoch}:%{version}
-Provides:	jdbc-stdext = 4.1
-Provides:	java-sasl = %{epoch}:%{version}
-Provides:	java-fonts = %{epoch}:%{version}
+Provides: jndi = %{epoch}:%{version}
+Provides: jndi-ldap = %{epoch}:%{version}
+Provides: jndi-cos = %{epoch}:%{version}
+Provides: jndi-rmi = %{epoch}:%{version}
+Provides: jndi-dns = %{epoch}:%{version}
+Provides: jaas = %{epoch}:%{version}
+Provides: jsse = %{epoch}:%{version}
+Provides: jce = %{epoch}:%{version}
+Provides: jdbc-stdext = 3.0
+Provides: java-sasl = %{epoch}:%{version}
+Provides: java-fonts = %{epoch}:%{version}
 
 %description
 The OpenJDK runtime environment.
 
-%package	devel
-Summary:	OpenJDK Development Environment
-Group:		Development/Java
+%package devel
+Summary: OpenJDK Development Environment
+Group:   Development/Java
 
 # Require base package.
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:         %{name} = %{epoch}:%{version}-%{release}
 # Post requires alternatives to install tool alternatives.
-Requires(post):	update-alternatives
+Requires(post):   %{_sbindir}/alternatives
 # Postun requires alternatives to uninstall tool alternatives.
-Requires(postun): update-alternatives
+Requires(postun): %{_sbindir}/alternatives
 
 # Standard JPackage devel provides.
-Provides:	java-sdk-%{javaver}-%{origin} = %{epoch}:%{version}
-Provides:	java-sdk-%{javaver} = %{epoch}:%{version}
-Provides:	java-sdk-%{origin} = %{epoch}:%{version}
-Provides:	java-sdk = %{epoch}:%{javaver}
-Provides:	java-%{javaver}-devel = %{epoch}:%{version}
-Provides:	java-devel-%{origin} = %{epoch}:%{version}
-Provides:	java-devel = %{epoch}:%{javaver}
+Provides: java-sdk-%{javaver}-%{origin} = %{epoch}:%{version}
+Provides: java-sdk-%{javaver} = %{epoch}:%{version}
+Provides: java-sdk-%{origin} = %{epoch}:%{version}
+Provides: java-sdk = %{epoch}:%{javaver}
+Provides: java-%{javaver}-devel = %{epoch}:%{version}
+Provides: java-devel-%{origin} = %{epoch}:%{version}
+Provides: java-devel = %{epoch}:%{javaver}
 
-%description	devel
+
+%description devel
 The OpenJDK development tools.
 
-%package	demo
-Summary:	OpenJDK Demos
-Group:		Development/Java
+%package demo
+Summary: OpenJDK Demos
+Group:   Development/Java
 
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires: %{name} = %{epoch}:%{version}-%{release}
 
-%description	demo
+%description demo
 The OpenJDK demos.
 
-%package	src
-Summary:	OpenJDK Source Bundle
-Group:		Development/Java
+%package src
+Summary: OpenJDK Source Bundle
+Group:   Development/Java
 
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires: %{name} = %{epoch}:%{version}-%{release}
 
-%description	src
+%description src
 The OpenJDK source bundle.
 
-%package	javadoc
-Summary:	OpenJDK API Documentation
-Group:		Development/Java
-Requires:	jpackage-utils
-BuildArch:	noarch
+%package javadoc
+Summary: OpenJDK API Documentation
+Group:   Development/Java
+Requires: jpackage-utils
+BuildArch: noarch
 
 # Post requires alternatives to install javadoc alternative.
-Requires(post):	update-alternatives
+Requires(post):   update-alternatives
 # Postun requires alternatives to uninstall javadoc alternative.
 Requires(postun): update-alternatives
 
 # Standard JPackage javadoc provides.
-Provides:	java-javadoc = %{epoch}:%{version}-%{release}
-Provides:	java-%{javaver}-javadoc = %{epoch}:%{version}-%{release}
+Provides: java-javadoc = %{epoch}:%{version}-%{release}
+Provides: java-%{javaver}-javadoc = %{epoch}:%{version}-%{release}
 
-%description	javadoc
+%description javadoc
 The OpenJDK API documentation.
 
 %prep
 %setup -q -c -n %{name}
-%setup -q -n %{name} -T -D -a 3
 %setup -q -n %{name} -T -D -a 1
-%setup -q -n %{name} -T -D -a 13
+%setup -q -n %{name} -T -D -a 11
 cp %{SOURCE2} .
-cp %{SOURCE4} .
 
 # OpenJDK patches
 %patch100
@@ -532,21 +597,21 @@ cp %{SOURCE4} .
 %endif
 
 # Remove libraries that are linked
-sh %{SOURCE12}
+sh %{SOURCE10}
 
 # Copy jaxp, jaf and jaxws drops
 mkdir drops/
 
 # Extract the generated files
-tar xzf %{SOURCE6}
+tar xzf %{SOURCE4}
 
 # Extract the rewriter (to rewrite rhino classes)
-tar xzf %{SOURCE7}
+tar xzf %{SOURCE5}
 
 # Extract systemtap tapsets
 %if %{with systemtap}
 
-tar xzf %{SOURCE8}
+tar xzf %{SOURCE6}
 
 for file in tapset/*.in; do
 
@@ -562,16 +627,16 @@ done
 
 # Pulseaudio
 %if %{with pulseaudio}
-tar xzf %{SOURCE11}
+tar xzf %{SOURCE9}
 %endif
 
 # Extract desktop files
-tar xzf %{SOURCE9}
+tar xzf %{SOURCE7}
 
 #apply all patches from tmp-patches
 TMPPATCHES=`ls tmp-patches/` ;
 for TP in $TMPPATCHES ; do
-echo "using patch $TP" ;
+ echo "using patch $TP" ;
  patch -p1 < tmp-patches/$TP ;
  r=$? ;
  if [ "$r" != "0" ] ; then
@@ -622,7 +687,6 @@ cp -a openjdk openjdk-boot
 %patch234
 %patch235
 %patch236
-
 %patch400 -p0
 %endif
 
@@ -709,8 +773,8 @@ mkdir -p bootstrap/boot
 cp -aL %{_jvmdir}/java-gcj/* bootstrap/boot/ || : # broken symlinks can be non-fatal but may cause this to fail
 
 # Replace javac with a wrapper that does some magic
-cp -af %{SOURCE5} bootstrap/boot/bin/javac
-chmod u+x bootstrap/boot/bin/javac # SOURCE5 may not be +x
+cp -af %{SOURCE3} bootstrap/boot/bin/javac
+chmod u+x bootstrap/boot/bin/javac # SOURCE3 may not be +x
 sed -i -e s:@RT_JAR@:$PWD/bootstrap/boot/jre/lib/rt.jar:g bootstrap/boot/bin/javac
 
 # Link the native2ascii binary
@@ -813,7 +877,7 @@ oldumask=`umask`
 
 # Set generic profile
 source jdk/make/jdk_generic_profile.sh
-
+ 
 # Restore old umask
 umask $oldumask
 
@@ -821,7 +885,7 @@ make \
   ANT="/usr/bin/ant" \
   DISTRO_NAME="%{product_vendor}" \
   DISTRO_PACKAGE_VERSION="%{vendor}-%{release}-%{_arch}" \
-  JDK_UPDATE_VERSION="%{openjdk_version}" \
+  JDK_UPDATE_VERSION=`printf "%02d" %{buildver}` \
   MILESTONE="fcs" \
   HOTSPOT_BUILD_JOBS="$NUM_PROC" \
   STATIC_CXX="false" \
@@ -861,7 +925,7 @@ popd
 %endif
 
 # Build Java Access Bridge for GNOME.
-pushd java-access-bridge-%{access_version}
+pushd java-access-bridge-%{accessver}
   patch -l -p1 < %{PATCH1}
   patch -l -p1 < %{PATCH2}
   OLD_PATH=$PATH
@@ -870,79 +934,80 @@ pushd java-access-bridge-%{access_version}
   make
   export PATH=$OLD_PATH
   cp -a bridge/accessibility.properties $JAVA_HOME/jre/lib
-  install -m644 gnome-java-bridge.jar $JAVA_HOME/jre/lib/ext
+  chmod 644 gnome-java-bridge.jar
+  cp -a gnome-java-bridge.jar $JAVA_HOME/jre/lib/ext
 popd
 
 # Copy tz.properties
 echo "sun.zoneinfo.dir=/usr/share/javazi" >> $JAVA_HOME/jre/lib/tz.properties
 
-%if %{runtests}
+
+%if %{with runtests}
 # Run jtreg test suite.
 {
-  echo ====================JTREG TESTING========================
-  export DISPLAY=:20
-  Xvfb :20 -screen 0 1x1x24 -ac&
-  echo $! > Xvfb.pid
-  make jtregcheck -k
-  kill -9 `cat Xvfb.pid`
-  unset DISPLAY
-  rm -f Xvfb.pid
-  echo ====================JTREG TESTING END====================
+echo ====================JTREG TESTING========================
+export DISPLAY=:20
+Xvfb :20 -screen 0 1x1x24 -ac&
+echo $! > Xvfb.pid
+make jtregcheck -k
+kill -9 `cat Xvfb.pid`
+unset DISPLAY
+rm -f Xvfb.pid
+echo ====================JTREG TESTING END====================
 } || :
 
 # Run Mauve test suite.
 {
-  pushd mauve-%{mauvedate}
-    ./configure
-    make
-    echo ====================MAUVE TESTING========================
-    export DISPLAY=:20
-    Xvfb :20 -screen 0 1x1x24 -ac&
-    echo $! > Xvfb.pid
-    $JAVA_HOME/bin/java Harness -vm $JAVA_HOME/bin/java \
-      -file %{SOURCE4} -timeout 30000 2>&1 | tee mauve_output
-    kill -9 `cat Xvfb.pid`
-    unset DISPLAY
-    rm -f Xvfb.pid
-    echo ====================MAUVE TESTING END====================
-  popd
+pushd mauve-%{mauvedate}
+./configure
+make
+echo ====================MAUVE TESTING========================
+export DISPLAY=:20
+Xvfb :20 -screen 0 1x1x24 -ac&
+echo $! > Xvfb.pid
+$JAVA_HOME/bin/java Harness -vm $JAVA_HOME/bin/java \
+-file %{SOURCE4} -timeout 30000 2>&1 | tee mauve_output
+kill -9 `cat Xvfb.pid`
+unset DISPLAY
+rm -f Xvfb.pid
+echo ====================MAUVE TESTING END====================
+popd
 } || :
 %endif
 
 %install
-rm -rf $RPM_BUILD_ROOT
 STRIP_KEEP_SYMTAB=libjvm*
 
 pushd %{buildoutputdir}/j2sdk-image
 
   # Install main files.
-  install -d -m 755 $RPM_BUILD_ROOT%{_jvmdir}/%{sdkdir}
-  cp -a bin include lib src.zip $RPM_BUILD_ROOT%{_jvmdir}/%{sdkdir}
-  install -d -m 755 $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}
-  cp -a jre/bin jre/lib $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}
+  install -d -m 755 %{buildroot}%{_jvmdir}/%{sdkdir}
+  cp -a bin include lib src.zip %{buildroot}%{_jvmdir}/%{sdkdir}
+  install -d -m 755 %{buildroot}%{_jvmdir}/%{jredir}
+  cp -a jre/bin jre/lib %{buildroot}%{_jvmdir}/%{jredir}
 
 %ifarch %{jit_arches}
   # Install systemtap support files.
-  install -dm 755 $RPM_BUILD_ROOT%{_jvmdir}/%{sdkdir}/tapset
-  cp -a $RPM_BUILD_DIR/%{name}/tapset/*.stp $RPM_BUILD_ROOT%{_jvmdir}/%{sdkdir}/tapset/
-  install -d -m 755 $RPM_BUILD_ROOT%{tapsetdir}
-  pushd $RPM_BUILD_ROOT%{tapsetdir}
+  install -dm 755 %{buildroot}%{_jvmdir}/%{sdkdir}/tapset
+  cp -a $RPM_BUILD_DIR/%{name}/tapset/*.stp %{buildroot}%{_jvmdir}/%{sdkdir}/tapset/
+  install -d -m 755 %{buildroot}%{tapsetdir}
+  pushd %{buildroot}%{tapsetdir}
     RELATIVE=$(%{abs2rel} %{_jvmdir}/%{sdkdir}/tapset %{tapsetdir})
     ln -sf $RELATIVE/*.stp .
   popd
 %endif
 
   # Install cacerts symlink.
-  rm -f $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/lib/security/cacerts
-  pushd $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/lib/security
+  rm -f %{buildroot}%{_jvmdir}/%{jredir}/lib/security/cacerts
+  pushd %{buildroot}%{_jvmdir}/%{jredir}/lib/security
     RELATIVE=$(%{abs2rel} %{_sysconfdir}/pki/java \
       %{_jvmdir}/%{jredir}/lib/security)
     ln -sf $RELATIVE/cacerts .
   popd
 
   # Install extension symlinks.
-  install -d -m 755 $RPM_BUILD_ROOT%{jvmjardir}
-  pushd $RPM_BUILD_ROOT%{jvmjardir}
+  install -d -m 755 %{buildroot}%{jvmjardir}
+  pushd %{buildroot}%{jvmjardir}
     RELATIVE=$(%{abs2rel} %{_jvmdir}/%{jredir}/lib %{jvmjardir})
     ln -sf $RELATIVE/jsse.jar jsse-%{version}.jar
     ln -sf $RELATIVE/jce.jar jce-%{version}.jar
@@ -965,15 +1030,15 @@ pushd %{buildoutputdir}/j2sdk-image
   popd
 
   # Install JCE policy symlinks.
-  install -d -m 755 $RPM_BUILD_ROOT%{_jvmprivdir}/%{archname}/jce/vanilla
+  install -d -m 755 %{buildroot}%{_jvmprivdir}/%{archname}/jce/vanilla
 
   # Install versionless symlinks.
-  pushd $RPM_BUILD_ROOT%{_jvmdir}
+  pushd %{buildroot}%{_jvmdir}
     ln -sf %{jredir} %{jrelnk}
     ln -sf %{sdkdir} %{sdklnk}
   popd
 
-  pushd $RPM_BUILD_ROOT%{_jvmjardir}
+  pushd %{buildroot}%{_jvmjardir}
     ln -sf %{sdkdir} %{jrelnk}
     ln -sf %{sdkdir} %{sdklnk}
   popd
@@ -982,85 +1047,91 @@ pushd %{buildoutputdir}/j2sdk-image
   rm -f man/man1/javaws*
 
   # Install man pages.
-  install -d -m 755 $RPM_BUILD_ROOT%{_mandir}/man1
+  install -d -m 755 %{buildroot}%{_mandir}/man1
   for manpage in man/man1/*
   do
     # Convert man pages to UTF8 encoding.
     iconv -f ISO_8859-1 -t UTF8 $manpage -o $manpage.tmp
     mv -f $manpage.tmp $manpage
-    install -m 644 -p $manpage $RPM_BUILD_ROOT%{_mandir}/man1/$(basename \
+    install -m 644 -p $manpage %{buildroot}%{_mandir}/man1/$(basename \
       $manpage .1)-%{name}.1
   done
 
   # Install demos and samples.
-  cp -a demo $RPM_BUILD_ROOT%{_jvmdir}/%{sdkdir}
+  cp -a demo %{buildroot}%{_jvmdir}/%{sdkdir}
   mkdir -p sample/rmi
   mv bin/java-rmi.cgi sample/rmi
-  cp -a sample $RPM_BUILD_ROOT%{_jvmdir}/%{sdkdir}
+  cp -a sample %{buildroot}%{_jvmdir}/%{sdkdir}
 
 popd
 
+
 # Install nss.cfg
-install -m 644 %{SOURCE10} $RPM_BUILD_ROOT%{_jvmdir}/%{jredir}/lib/security/
+install -m 644 %{SOURCE8} %{buildroot}%{_jvmdir}/%{jredir}/lib/security/
 
 # Install Javadoc documentation.
-install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}
-cp -a %{buildoutputdir}/docs $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+install -d -m 755 %{buildroot}%{_javadocdir}
+cp -a %{buildoutputdir}/docs %{buildroot}%{_javadocdir}/%{name}
 
 # Install icons and menu entries.
 for s in 16 24 32 48 ; do
   install -D -p -m 644 \
     openjdk/jdk/src/solaris/classes/sun/awt/X11/java-icon${s}.png \
-    $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/${s}x${s}/apps/java-%{javaver}.png
+    %{buildroot}%{_datadir}/icons/hicolor/${s}x${s}/apps/java-%{javaver}.png
 done
 
 # Install desktop files.
-install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/{applications,pixmaps}
+install -d -m 755 %{buildroot}%{_datadir}/{applications,pixmaps}
 for e in jconsole policytool ; do
     desktop-file-install --vendor=%{name} --mode=644 \
-        --dir=$RPM_BUILD_ROOT%{_datadir}/applications $e.desktop
+        --dir=%{buildroot}%{_datadir}/applications $e.desktop
 done
 
 # Find JRE directories.
-find $RPM_BUILD_ROOT%{_jvmdir}/%{jredir} -type d \
+find %{buildroot}%{_jvmdir}/%{jredir} -type d \
   | grep -v jre/lib/security \
-  | sed 's|'$RPM_BUILD_ROOT'|%dir |' \
+  | sed 's|'%{buildroot}'|%dir |' \
   > %{name}.files
 # Find JRE files.
-find $RPM_BUILD_ROOT%{_jvmdir}/%{jredir} -type f -o -type l \
+find %{buildroot}%{_jvmdir}/%{jredir} -type f -o -type l \
   | grep -v jre/lib/security \
-  | sed 's|'$RPM_BUILD_ROOT'||' \
+  | sed 's|'%{buildroot}'||' \
   >> %{name}.files
 # Find demo directories.
-find $RPM_BUILD_ROOT%{_jvmdir}/%{sdkdir}/demo \
-  $RPM_BUILD_ROOT%{_jvmdir}/%{sdkdir}/sample -type d \
-  | sed 's|'$RPM_BUILD_ROOT'|%dir |' \
+find %{buildroot}%{_jvmdir}/%{sdkdir}/demo \
+  %{buildroot}%{_jvmdir}/%{sdkdir}/sample -type d \
+  | sed 's|'%{buildroot}'|%dir |' \
   > %{name}-demo.files
 
 # FIXME: remove SONAME entries from demo DSOs.  See
 # https://bugzilla.redhat.com/show_bug.cgi?id=436497
 
 # Find non-documentation demo files.
-find $RPM_BUILD_ROOT%{_jvmdir}/%{sdkdir}/demo \
-  $RPM_BUILD_ROOT%{_jvmdir}/%{sdkdir}/sample \
+find %{buildroot}%{_jvmdir}/%{sdkdir}/demo \
+  %{buildroot}%{_jvmdir}/%{sdkdir}/sample \
   -type f -o -type l | sort \
   | grep -v README \
-  | sed 's|'$RPM_BUILD_ROOT'||' \
+  | sed 's|'%{buildroot}'||' \
   >> %{name}-demo.files
 # Find documentation demo files.
-find $RPM_BUILD_ROOT%{_jvmdir}/%{sdkdir}/demo \
-  $RPM_BUILD_ROOT%{_jvmdir}/%{sdkdir}/sample \
+find %{buildroot}%{_jvmdir}/%{sdkdir}/demo \
+  %{buildroot}%{_jvmdir}/%{sdkdir}/sample \
   -type f -o -type l | sort \
   | grep README \
-  | sed 's|'$RPM_BUILD_ROOT'||' \
+  | sed 's|'%{buildroot}'||' \
   | sed 's|^|%doc |' \
   >> %{name}-demo.files
 
 # FIXME: identical binaries are copied, not linked. This needs to be
 # fixed upstream.
 %post
-ext=%{_extension}
-update-alternatives \
+%ifarch %{jit_arches}
+#see https://bugzilla.redhat.com/show_bug.cgi?id=513605
+%{jrebindir}/java -Xshare:dump >/dev/null 2>/dev/null
+%endif
+
+ext=.xz
+alternatives \
   --install %{_bindir}/java java %{jrebindir}/java %{priority} \
   --slave %{_jvmdir}/jre jre %{_jvmdir}/%{jrelnk} \
   --slave %{_jvmjardir}/jre jre_exports %{_jvmjardir}/%{jrelnk} \
@@ -1091,58 +1162,46 @@ update-alternatives \
   --slave %{_mandir}/man1/unpack200.1$ext unpack200.1$ext \
   %{_mandir}/man1/unpack200-%{name}.1$ext
 
-update-alternatives \
+alternatives \
   --install %{_jvmdir}/jre-%{origin} \
   jre_%{origin} %{_jvmdir}/%{jrelnk} %{priority} \
   --slave %{_jvmjardir}/jre-%{origin} \
   jre_%{origin}_exports %{_jvmjardir}/%{jrelnk}
 
-update-alternatives \
+alternatives \
   --install %{_jvmdir}/jre-%{javaver} \
   jre_%{javaver} %{_jvmdir}/%{jrelnk} %{priority} \
   --slave %{_jvmjardir}/jre-%{javaver} \
   jre_%{javaver}_exports %{_jvmjardir}/%{jrelnk}
-
-update-desktop-database %{_datadir}/applications &> /dev/null || :
-
-touch --no-create %{_datadir}/icons/hicolor
-if [ -x %{_bindir}/gtk-update-icon-cache ] ; then
-  %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor
-fi
 
 exit 0
 
 %postun
 if [ $1 -eq 0 ]
 then
-  update-alternatives --remove java %{jrebindir}/java
-  update-alternatives --remove jre_%{origin} %{_jvmdir}/%{jrelnk}
-  update-alternatives --remove jre_%{javaver} %{_jvmdir}/%{jrelnk}
-fi
-
-update-desktop-database %{_datadir}/applications &> /dev/null || :
-
-touch --no-create %{_datadir}/icons/hicolor
-if [ -x %{_bindir}/gtk-update-icon-cache ] ; then
-  %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor
+  alternatives --remove java %{jrebindir}/java
+  alternatives --remove jre_%{origin} %{_jvmdir}/%{jrelnk}
+  alternatives --remove jre_%{javaver} %{_jvmdir}/%{jrelnk}
 fi
 
 exit 0
 
 %post devel
-ext=%{_extension}
-update-alternatives \
+ext=.xz
+alternatives \
   --install %{_bindir}/javac javac %{sdkbindir}/javac %{priority} \
   --slave %{_jvmdir}/java java_sdk %{_jvmdir}/%{sdklnk} \
   --slave %{_jvmjardir}/java java_sdk_exports %{_jvmjardir}/%{sdklnk} \
   --slave %{_bindir}/appletviewer appletviewer %{sdkbindir}/appletviewer \
   --slave %{_bindir}/apt apt %{sdkbindir}/apt \
   --slave %{_bindir}/extcheck extcheck %{sdkbindir}/extcheck \
+  --slave %{_bindir}/idlj idlj %{sdkbindir}/idlj \
   --slave %{_bindir}/jar jar %{sdkbindir}/jar \
   --slave %{_bindir}/jarsigner jarsigner %{sdkbindir}/jarsigner \
   --slave %{_bindir}/javadoc javadoc %{sdkbindir}/javadoc \
   --slave %{_bindir}/javah javah %{sdkbindir}/javah \
   --slave %{_bindir}/javap javap %{sdkbindir}/javap \
+  --slave %{_bindir}/jcmd jcmd %{sdkbindir}/jcmd \
   --slave %{_bindir}/jconsole jconsole %{sdkbindir}/jconsole \
   --slave %{_bindir}/jdb jdb %{sdkbindir}/jdb \
   --slave %{_bindir}/jhat jhat %{sdkbindir}/jhat \
@@ -1219,13 +1278,13 @@ update-alternatives \
   --slave %{_mandir}/man1/xjc.1$ext xjc.1$ext \
   %{_mandir}/man1/xjc-%{name}.1$ext
 
-update-alternatives \
+alternatives \
   --install %{_jvmdir}/java-%{origin} \
   java_sdk_%{origin} %{_jvmdir}/%{sdklnk} %{priority} \
   --slave %{_jvmjardir}/java-%{origin} \
   java_sdk_%{origin}_exports %{_jvmjardir}/%{sdklnk}
 
-update-alternatives \
+alternatives \
   --install %{_jvmdir}/java-%{javaver} \
   java_sdk_%{javaver} %{_jvmdir}/%{sdklnk} %{priority} \
   --slave %{_jvmjardir}/java-%{javaver} \
@@ -1236,15 +1295,15 @@ exit 0
 %postun devel
 if [ $1 -eq 0 ]
 then
-  update-alternatives --remove javac %{sdkbindir}/javac
-  update-alternatives --remove java_sdk_%{origin} %{_jvmdir}/%{sdklnk}
-  update-alternatives --remove java_sdk_%{javaver} %{_jvmdir}/%{sdklnk}
+  alternatives --remove javac %{sdkbindir}/javac
+  alternatives --remove java_sdk_%{origin} %{_jvmdir}/%{sdklnk}
+  alternatives --remove java_sdk_%{javaver} %{_jvmdir}/%{sdklnk}
 fi
 
 exit 0
 
 %post javadoc
-update-alternatives \
+alternatives \
   --install %{_javadocdir}/java javadocdir %{_javadocdir}/%{name}/api \
   %{priority}
 
@@ -1253,7 +1312,7 @@ exit 0
 %postun javadoc
 if [ $1 -eq 0 ]
 then
-  update-alternatives --remove javadocdir %{_javadocdir}/%{name}/api
+  alternatives --remove javadocdir %{_javadocdir}/%{name}/api
 fi
 
 exit 0
@@ -1272,86 +1331,4 @@ exit 0
 %dir %{_jvmdir}/%{jredir}/lib/security
 %{_jvmdir}/%{jredir}/lib/security/cacerts
 %config(noreplace) %{_jvmdir}/%{jredir}/lib/security/java.policy
-%config(noreplace) %{_jvmdir}/%{jredir}/lib/security/java.security
-%{_datadir}/icons/hicolor/*x*/apps/java-%{javaver}.png
-%{_mandir}/man1/java-%{name}.1*
-%{_mandir}/man1/keytool-%{name}.1*
-%{_mandir}/man1/orbd-%{name}.1*
-%{_mandir}/man1/pack200-%{name}.1*
-%{_mandir}/man1/rmid-%{name}.1*
-%{_mandir}/man1/rmiregistry-%{name}.1*
-%{_mandir}/man1/servertool-%{name}.1*
-%{_mandir}/man1/tnameserv-%{name}.1*
-%{_mandir}/man1/unpack200-%{name}.1*
-%{_jvmdir}/%{jredir}/lib/security/nss.cfg
-
-%files devel
-%doc %{buildoutputdir}/j2sdk-image/ASSEMBLY_EXCEPTION
-%doc %{buildoutputdir}/j2sdk-image/LICENSE
-%doc %{buildoutputdir}/j2sdk-image/THIRD_PARTY_README
-%dir %{_jvmdir}/%{sdkdir}/bin
-%dir %{_jvmdir}/%{sdkdir}/include
-%dir %{_jvmdir}/%{sdkdir}/lib
-%ifarch %{jit_arches}
-%dir %{_jvmdir}/%{sdkdir}/tapset
-%endif
-%{_jvmdir}/%{sdkdir}/bin/*
-%{_jvmdir}/%{sdkdir}/include/*
-%{_jvmdir}/%{sdkdir}/lib/*
-%ifarch %{jit_arches}
-%{_jvmdir}/%{sdkdir}/tapset/*.stp
-%endif
-%{_jvmdir}/%{sdklnk}
-%{_jvmjardir}/%{sdklnk}
-%{_datadir}/applications/*jconsole.desktop
-%{_datadir}/applications/*policytool.desktop
-%{_mandir}/man1/appletviewer-%{name}.1*
-%{_mandir}/man1/apt-%{name}.1*
-%{_mandir}/man1/extcheck-%{name}.1*
-%{_mandir}/man1/idlj-%{name}.1*
-%{_mandir}/man1/jar-%{name}.1*
-%{_mandir}/man1/jarsigner-%{name}.1*
-%{_mandir}/man1/javac-%{name}.1*
-%{_mandir}/man1/javadoc-%{name}.1*
-%{_mandir}/man1/javah-%{name}.1*
-%{_mandir}/man1/javap-%{name}.1*
-%{_mandir}/man1/jconsole-%{name}.1*
-%{_mandir}/man1/jcmd-%{name}.1*
-%{_mandir}/man1/jdb-%{name}.1*
-%{_mandir}/man1/jhat-%{name}.1*
-%{_mandir}/man1/jinfo-%{name}.1*
-%{_mandir}/man1/jmap-%{name}.1*
-%{_mandir}/man1/jps-%{name}.1*
-%{_mandir}/man1/jrunscript-%{name}.1*
-%{_mandir}/man1/jsadebugd-%{name}.1*
-%{_mandir}/man1/jstack-%{name}.1*
-%{_mandir}/man1/jstat-%{name}.1*
-%{_mandir}/man1/jstatd-%{name}.1*
-%{_mandir}/man1/native2ascii-%{name}.1*
-%{_mandir}/man1/policytool-%{name}.1*
-%{_mandir}/man1/rmic-%{name}.1*
-%{_mandir}/man1/schemagen-%{name}.1*
-%{_mandir}/man1/serialver-%{name}.1*
-%{_mandir}/man1/wsgen-%{name}.1*
-%{_mandir}/man1/wsimport-%{name}.1*
-%{_mandir}/man1/xjc-%{name}.1*
-%ifarch %{jit_arches}
-%{tapsetroot}
-%endif
-
-%files demo -f %{name}-demo.files
-%doc %{buildoutputdir}/j2sdk-image/jre/LICENSE
-
-%files src
-%doc README.src
-%{_jvmdir}/%{sdkdir}/src.zip
-%if %{runtests}
-# FIXME: put these in a separate testresults subpackage.
-%doc mauve_tests
-%doc mauve-%{mauvedate}/mauve_output
-%doc test/jtreg-summary.log
-%endif
-
-%files javadoc
-%doc %{_javadocdir}/%{name}
-%doc %{buildoutputdir}/j2sdk-image/jre/LICENSE
+%config(
