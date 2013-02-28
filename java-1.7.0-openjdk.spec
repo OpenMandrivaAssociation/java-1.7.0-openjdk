@@ -425,10 +425,10 @@ BuildRequires: lsb
 BuildRequires: java-1.5.0-gcj-devel
 BuildRequires: libstdc++-static-devel
 %else
-BuildRequires: java-1.7.0-openjdk-devel
+BuildRequires: java-1.6.0-openjdk-devel
 %endif # gcjbootstrap
 %else
-BuildRequires: java-1.7.0-openjdk-devel
+BuildRequires: java-1.6.0-openjdk-devel
 %endif #bootstrap
 BuildRequires: x11-server-xvfb
 BuildRequires: x11-font-type1
