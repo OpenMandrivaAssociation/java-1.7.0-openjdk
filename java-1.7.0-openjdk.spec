@@ -10,7 +10,7 @@
 
 # If debug is 1, OpenJDK is built with all debug info present.
 
-%define icedtea_version 2.3.6
+%define icedtea_version 2.3.7
 %define hg_tag icedtea-{icedtea_version}
 
 %define accessmajorver 1.23
@@ -150,7 +150,7 @@
 
 Name:    java-%{javaver}-%{origin}
 Version: %{javaver}.%{buildver}
-Release: %mkrel %{icedtea_version}.1
+Release: %{icedtea_version}.1
 # java-1.5.0-ibm from jpackage.org set Epoch to 1 for unknown reasons,
 # and this change was brought into RHEL-4.  java-1.5.0-ibm packages
 # also included the epoch in their virtual provides.  This created a
@@ -399,27 +399,29 @@ Patch302: systemtap.patch
 #Mageia patches
 Patch400: java-1.7.0-openjdk-fix-link.patch
 
+# OpenMandriva patches
+Patch500: icedtea-2.3.7-fix-syntax-error.patch
+
 BuildRequires: autoconf
 BuildRequires: automake
 BuildRequires: pkgconfig(alsa)
 BuildRequires: cups-devel
 BuildRequires: desktop-file-utils
 BuildRequires: giflib-devel
-BuildRequires: lcms2-devel
-BuildRequires: x11-proto-devel
-BuildRequires: libxi-devel
-BuildRequires: libxp-devel
-BuildRequires: libxrender-devel
-BuildRequires: libxt-devel
-BuildRequires: libxtst-devel
+BuildRequires: pkgconfig(lcms2)
+BuildRequires: pkgconfig(xproto)
+BuildRequires: pkgconfig(xi)
+BuildRequires: pkgconfig(xrender)
+BuildRequires: pkgconfig(xt)
+BuildRequires: pkgconfig(xtst)
 BuildRequires: jpeg-devel
-BuildRequires: png-devel
+BuildRequires: pkgconfig(libpng)
 BuildRequires: wget
 BuildRequires: xalan-j2
 BuildRequires: xerces-j2
 #BuildRequires: mercurial
 BuildRequires: ant
-BuildRequires: libxinerama-devel
+BuildRequires: pkgconfig(xinerama)
 BuildRequires: rhino
 BuildRequires: lsb
 %if %{with bootstrap}
@@ -436,18 +438,17 @@ BuildRequires: x11-server-xvfb
 BuildRequires: x11-font-type1
 BuildRequires: x11-font-misc
 BuildRequires: pkgconfig(freetype2)
-BuildRequires: fontconfig
+BuildRequires: pkgconfig(fontconfig)
 BuildRequires: ecj
-BuildRequires: fontconfig
 # Java Access Bridge for GNOME build requirements.
-BuildRequires: at-spi-devel
+BuildRequires: pkgconfig(libspi-1.0)
 BuildRequires: gawk
 BuildRequires: pkgconfig >= 0.9.0
 BuildRequires: pkgconfig(zlib)
 BuildRequires: xsltproc
 # PulseAudio build requirements.
 %if %{with pulseaudio}
-BuildRequires: pulseaudio-devel >= 0.9.11
+BuildRequires: pkgconfig(libpulse)
 BuildRequires: pulseaudio >= 0.9.11
 %endif
 # Zero-assembler build requirement.
@@ -494,12 +495,16 @@ Provides: jre = %{javaver}
 Provides: java-%{origin} = %{epoch}:%{version}-%{release}
 Provides: java = %{epoch}:%{javaver}
 
-# Obsolete older 1.6 packages as it cannot use the new bytecode
-Obsoletes: java-1.6.0-openjdk
-Obsoletes: java-1.6.0-openjdk-demo
-Obsoletes: java-1.6.0-openjdk-devel
-Obsoletes: java-1.6.0-openjdk-javadoc
-Obsoletes: java-1.6.0-openjdk-src
+# Some other distributions make this package obsolete java-1.6.0-openjdk-*
+# because 1.6.0 can't run 1.7.0 bytecode.
+# This "fix" is, however, a very bad idea - 1.6.0 is still extremely useful
+# (one of the main uses of Java these days is to build Android bits -- which
+# can't be done with javac 1.7).
+# The better approach is to build jar files with 1.6.0 unless 1.7.0 specific
+# features are needed -- jar files built with 1.6.0 can work with both 1.6.0
+# and 1.7.0.
+# Also, 1.6.0 is actually needed to bootstrap 1.7.0.
+# Please don't merge this "feature" when syncing with others.
 
 # Standard JPackage extensions provides.
 Provides: jndi = %{epoch}:%{version}
@@ -689,8 +694,12 @@ cp -a openjdk openjdk-boot
 %patch236
 %patch400 -p0
 %endif
+%patch500 -p1 -b .build~
 
 %build
+# Just to be on the safe side
+unset CLASSPATH
+
 # How many cpu's do we have?
 export NUM_PROC=`/usr/bin/getconf _NPROCESSORS_ONLN 2> /dev/null || :`
 export NUM_PROC=${NUM_PROC:-1}
