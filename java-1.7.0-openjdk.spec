@@ -227,10 +227,6 @@ Source10: remove-intree-libraries.sh
 #but were needed asap in distribution. Those parches are then applied in loop
 Source11: tmp-patches-java-1.7.0-openjdk-f17.tar.gz
 
-# http://icedtea.classpath.org/hg/release/icedtea7-forest-2.1
-# hg tag: icedtea-2.1.5
-Source100: openjdk-icedtea-2.1.6.tar.gz
-
 # RPM/distribution specific patches
 
 # Allow TCK to pass with access bridge wired in
