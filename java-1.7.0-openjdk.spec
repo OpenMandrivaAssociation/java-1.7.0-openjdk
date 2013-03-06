@@ -148,9 +148,11 @@
 # Prevent brp-java-repack-jars from being run.
 %define __jar_repack 0
 
+Summary: OpenJDK Runtime Environment
 Name:    java-%{javaver}-%{origin}
+Epoch:   1
 Version: %{javaver}.%{buildver}
-Release: %{icedtea_version}.1
+Release: %{icedtea_version}.2
 # java-1.5.0-ibm from jpackage.org set Epoch to 1 for unknown reasons,
 # and this change was brought into RHEL-4.  java-1.5.0-ibm packages
 # also included the epoch in their virtual provides.  This created a
@@ -160,12 +162,9 @@ Release: %{icedtea_version}.1
 # satisfied by the 1:1.5.0 packages.  Thus we need to set the epoch in
 # JDK package >= 1.6.0 to 1, and packages referring to JDK virtual
 # provides >= 1.6.0 must specify the epoch, "java >= 1:1.6.0".
-Epoch:   1
-Summary: OpenJDK Runtime Environment
 Group:   Development/Java
-
 License:  ASL 1.1 and ASL 2.0 and GPL+ and GPLv2 and GPLv2 with exceptions and LGPL+ and LGPLv2 and MPLv1.0 and MPLv1.1 and Public Domain and W3C
-URL:      http://openjdk.java.net/
+Url:      http://openjdk.java.net/
 
 #head
 #REPO=http://icedtea.classpath.org/hg/icedtea7-forest
@@ -398,28 +397,27 @@ Patch400: java-1.7.0-openjdk-fix-link.patch
 # OpenMandriva patches
 Patch500: icedtea-2.3.7-fix-syntax-error.patch
 
-BuildRequires: autoconf
-BuildRequires: automake
-BuildRequires: pkgconfig(alsa)
-BuildRequires: cups-devel
+BuildRequires: ant
 BuildRequires: desktop-file-utils
-BuildRequires: giflib-devel
-BuildRequires: pkgconfig(lcms2)
-BuildRequires: pkgconfig(xproto)
-BuildRequires: pkgconfig(xi)
-BuildRequires: pkgconfig(xrender)
-BuildRequires: pkgconfig(xt)
-BuildRequires: pkgconfig(xtst)
-BuildRequires: jpeg-devel
-BuildRequires: pkgconfig(libpng)
+BuildRequires: lsb
+BuildRequires: rhino
 BuildRequires: wget
 BuildRequires: xalan-j2
 BuildRequires: xerces-j2
-#BuildRequires: mercurial
-BuildRequires: ant
+Buildrequires: xprop
+Buildrequires: zip
+BuildRequires: cups-devel
+BuildRequires: giflib-devel
+BuildRequires: jpeg-devel
+BuildRequires: pkgconfig(alsa)
+BuildRequires: pkgconfig(lcms2)
+BuildRequires: pkgconfig(libpng)
+BuildRequires: pkgconfig(xproto)
+BuildRequires: pkgconfig(xi)
 BuildRequires: pkgconfig(xinerama)
-BuildRequires: rhino
-BuildRequires: lsb
+BuildRequires: pkgconfig(xrender)
+BuildRequires: pkgconfig(xt)
+BuildRequires: pkgconfig(xtst)
 %if %{with bootstrap}
 %if %{with gcjbootstrap}
 BuildRequires: java-1.5.0-gcj-devel
@@ -437,11 +435,10 @@ BuildRequires: pkgconfig(freetype2)
 BuildRequires: pkgconfig(fontconfig)
 BuildRequires: ecj
 # Java Access Bridge for GNOME build requirements.
-BuildRequires: pkgconfig(libspi-1.0)
 BuildRequires: gawk
-BuildRequires: pkgconfig >= 0.9.0
-BuildRequires: pkgconfig(zlib)
 BuildRequires: xsltproc
+BuildRequires: pkgconfig(libspi-1.0)
+BuildRequires: pkgconfig(zlib)
 # PulseAudio build requirements.
 %if %{with pulseaudio}
 BuildRequires: pkgconfig(libpulse)
@@ -449,10 +446,8 @@ BuildRequires: pulseaudio >= 0.9.11
 %endif
 # Zero-assembler build requirement.
 %ifnarch %{jit_arches}
-BuildRequires: libffi-devel
+BuildRequires: pkgconfig(libffi)
 %endif
-Buildrequires: zip
-Buildrequires: xprop
 
 #ExclusiveArch: x86_64 i686
 
@@ -468,8 +463,8 @@ BuildRequires: prelink
 BuildRequires: systemtap
 %endif
 
-Requires: rhino
 Requires: lcms2
+Requires: rhino
 #Requires: libjpeg = 6b
 # Require /etc/pki/java/cacerts.
 Requires: rootcerts-java
@@ -538,14 +533,12 @@ Provides: java-%{javaver}-devel = %{epoch}:%{version}
 Provides: java-devel-%{origin} = %{epoch}:%{version}
 Provides: java-devel = %{epoch}:%{javaver}
 
-
 %description devel
 The OpenJDK development tools.
 
 %package demo
 Summary: OpenJDK Demos
 Group:   Development/Java
-
 Requires: %{name} = %{epoch}:%{version}-%{release}
 
 %description demo
@@ -554,7 +547,6 @@ The OpenJDK demos.
 %package src
 Summary: OpenJDK Source Bundle
 Group:   Development/Java
-
 Requires: %{name} = %{epoch}:%{version}-%{release}
 
 %description src
@@ -563,14 +555,12 @@ The OpenJDK source bundle.
 %package javadoc
 Summary: OpenJDK API Documentation
 Group:   Development/Java
-Requires: jpackage-utils
 BuildArch: noarch
-
+Requires: jpackage-utils
 # Post requires alternatives to install javadoc alternative.
 Requires(post):   update-alternatives
 # Postun requires alternatives to uninstall javadoc alternative.
 Requires(postun): update-alternatives
-
 # Standard JPackage javadoc provides.
 Provides: java-javadoc = %{epoch}:%{version}-%{release}
 Provides: java-%{javaver}-javadoc = %{epoch}:%{version}-%{release}
@@ -1070,7 +1060,6 @@ pushd %{buildoutputdir}/j2sdk-image
 
 popd
 
-
 # Install nss.cfg
 install -m 644 %{SOURCE8} %{buildroot}%{_jvmdir}/%{jredir}/lib/security/
 
@@ -1321,7 +1310,6 @@ then
 fi
 
 exit 0
-
 
 %files -f %{name}.files
 %doc %{buildoutputdir}/j2sdk-image/jre/ASSEMBLY_EXCEPTION
