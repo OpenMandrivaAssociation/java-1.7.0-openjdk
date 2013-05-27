@@ -10,7 +10,7 @@
 
 # If debug is 1, OpenJDK is built with all debug info present.
 
-%define icedtea_version 2.3.7
+%define icedtea_version 2.3.9
 %define hg_tag icedtea-{icedtea_version}
 
 %define accessmajorver 1.23
@@ -166,20 +166,10 @@ Group:   Development/Java
 License:  ASL 1.1 and ASL 2.0 and GPL+ and GPLv2 and GPLv2 with exceptions and LGPL+ and LGPLv2 and MPLv1.0 and MPLv1.1 and Public Domain and W3C
 Url:      http://openjdk.java.net/
 
-#head
-#REPO=http://icedtea.classpath.org/hg/icedtea7-forest
-#current release
-#REPO=http://icedtea.classpath.org/hg/release/icedtea7-forest-2.3
-# hg clone $REPO/ openjdk -r %{hg_tag}
-# hg clone $REPO/corba/ openjdk/corba -r %{hg_tag}
-# hg clone $REPO/hotspot/ openjdk/hotspot -r %{hg_tag}
-# hg clone $REPO/jaxp/ openjdk/jaxp -r %{hg_tag}
-# hg clone $REPO/jaxws/ openjdk/jaxws -r %{hg_tag}
-# hg clone $REPO/jdk/ openjdk/jdk -r %{hg_tag}
-# hg clone $REPO/langtools/ openjdk/langtools -r %{hg_tag}
-# find openjdk -name ".hg" -exec rm -rf '{}' \;
-# tar czf openjdk-icedtea-%{icedtea_version}.tar.gz openjdk
-Source0:  openjdk-icedtea-%{icedtea_version}.tar.gz
+# Use the create-openjdk-icedtea-tarball script (Source100) to generate
+# the tarball
+Source0:  openjdk-icedtea-%{icedtea_version}.tar.xz
+Source100: create-openjdk-icedtea-tarball
 
 # Gnome access bridge
 # Download-able from accessurl, md5 hash supported
@@ -221,10 +211,6 @@ Source9: pulseaudio.tar.gz
 
 # Removed libraries that we link instead
 Source10: remove-intree-libraries.sh
-
-#This archive contains all temporal patches, which are or will be soon upstreamed,
-#but were needed asap in distribution. Those parches are then applied in loop
-Source11: tmp-patches-java-1.7.0-openjdk-f17.tar.gz
 
 # RPM/distribution specific patches
 
@@ -395,7 +381,6 @@ Patch302: systemtap.patch
 Patch400: java-1.7.0-openjdk-fix-link.patch
 
 # OpenMandriva patches
-Patch500: icedtea-2.3.7-fix-syntax-error.patch
 
 BuildRequires: ant
 BuildRequires: desktop-file-utils
@@ -571,7 +556,7 @@ The OpenJDK API documentation.
 %prep
 %setup -q -c -n %{name}
 %setup -q -n %{name} -T -D -a 1
-%setup -q -n %{name} -T -D -a 11
+%setup -q -n %{name} -T -D
 cp %{SOURCE2} .
 
 # OpenJDK patches
@@ -625,15 +610,17 @@ tar xzf %{SOURCE9}
 tar xzf %{SOURCE7}
 
 #apply all patches from tmp-patches
-TMPPATCHES=`ls tmp-patches/` ;
-for TP in $TMPPATCHES ; do
- echo "using patch $TP" ;
- patch -p1 < tmp-patches/$TP ;
- r=$? ;
- if [ "$r" != "0" ] ; then
- exit 5;
- fi;
-done ;
+if [ -d tmp-patches ]; then
+	TMPPATCHES=`ls tmp-patches/`
+	for TP in $TMPPATCHES ; do
+		echo "using patch $TP"
+		patch -p1 < tmp-patches/$TP
+		r=$?
+		if [ "$r" != "0" ] ; then
+			exit 5
+		fi
+	done
+fi
 
 # If bootstrapping, apply additional patches
 %if %{with gcjbootstrap}
@@ -641,46 +628,45 @@ done ;
 cp -a openjdk openjdk-boot
 
 # Add bootstrap patches
-%patch200
-%patch201
-%patch202
-%patch203
-%patch204
-%patch205
-%patch206
-%patch207
-%patch208
-%patch209
-%patch210
-%patch211
-%patch212
-%patch213
-%patch214
-%patch215
-%patch216
-%patch217
-%patch218
-%patch219
-%patch220
-%patch221
-%patch222
-%patch223
-%patch224
-%patch225
-%patch226
-%patch227
-%patch228
-%patch229
-%patch230
-%patch231
-%patch232
-%patch233
-%patch234
-%patch235
-%patch236
-%patch400 -p0
+%patch200 -b .bt1~
+%patch201 -b .bt2~
+%patch202 -b .bt3~
+%patch203 -b .bt4~
+%patch204 -b .bt5~
+%patch205 -b .bt6~
+%patch206 -b .bt7~
+%patch207 -b .bt8~
+%patch208 -b .bt9~
+%patch209 -b .bt10~
+%patch210 -b .bt11~
+%patch211 -b .bt12~
+%patch212 -b .bt13~
+%patch213 -b .bt14~
+%patch214 -b .bt15~
+%patch215 -b .bt16~
+%patch216 -b .bt17~
+%patch217 -b .bt18~
+%patch218 -b .bt19~
+%patch219 -b .bt20~
+%patch220 -b .bt21~
+%patch221 -b .bt22~
+%patch222 -b .bt23~
+%patch223 -b .bt24~
+%patch224 -b .bt25~
+%patch225 -b .bt26~
+%patch226 -b .bt27~
+%patch227 -b .bt28~
+%patch228 -b .bt29~
+%patch229 -b .bt30~
+%patch230 -b .bt31~
+%patch231 -b .bt32~
+%patch232 -b .bt33~
+%patch233 -b .bt34~
+%patch234 -b .bt35~
+%patch235 -b .bt36~
+%patch236 -b .bt37~
+%patch400 -p0 -b .bt1~
 %endif
-%patch500 -p1 -b .build~
 
 %build
 # Just to be on the safe side
@@ -698,31 +684,31 @@ export ARCH_DATA_MODEL=64
 export CFLAGS="$CFLAGS -mieee"
 %endif
 
-patch -l -p0 < %{PATCH3}
-patch -l -p0 < %{PATCH4}
+patch -l -p0 -b -z .btp3~ < %{PATCH3}
+patch -l -p0 -b -z .btp4~ < %{PATCH4}
 
 %if %{with debug}
-patch -l -p0 < %{PATCH5}
-patch -l -p0 < %{PATCH6}
+patch -l -p0 -b -z .dbg1~ < %{PATCH5}
+patch -l -p0 -b -z .dbg2~ < %{PATCH6}
 %endif
 
 # Type fixes for s390
 %ifarch s390 s390x
- patch -l -p0 < %{PATCH101}
+ patch -l -p0 -b -z .s390~ < %{PATCH101}
 #patch -l -p0 < %{PATCH102} # size_t patch disabled for now as it has conflicts
 %endif
 
 # Arm fixes
 %ifarch %{arm}
-patch -l -p0 < %{PATCH103}
+patch -l -p0 -b -z .arm~ < %{PATCH103}
 %endif
 
-patch -l -p0 < %{PATCH106}
+patch -l -p0 -b -z .p106~ < %{PATCH106}
 
 %ifarch ppc ppc64
 # PPC fixes
-patch -l -p0 < %{PATCH104}
-patch -l -p0 < %{PATCH105}
+patch -l -p0 -b -z .ppc0~ < %{PATCH104}
+patch -l -p0 -b -z .ppc1~ < %{PATCH105}
 %endif
 
 # Add a "-icedtea" tag to the version

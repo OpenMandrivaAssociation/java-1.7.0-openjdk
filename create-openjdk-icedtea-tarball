@@ -1,0 +1,32 @@
+#!/bin/sh
+cd `dirname $0`
+D=`pwd`
+VERSION=`cat java-1.7.0-openjdk.spec |grep "define icedtea_version" |cut -d" " -f3-`
+MAJOR=`echo $VERSION |cut -d. -f1-2`
+
+if curl http://icedtea.classpath.org/hg/release/icedtea7-forest-$MAJOR >/dev/null; then
+	REPO=http://icedtea.classpath.org/hg/release/icedtea7-forest-$MAJOR
+else
+	REPO=http://icedtea.classpath.org/hg/icedtea7-forest
+fi
+
+TMP=`mktemp -d /tmp/openjdk.XXXXXX`
+cd $TMP
+
+if hg clone $REPO/ openjdk -r icedtea-$VERSION; then
+	TAG="-r icedtea-$VERSION"
+else
+	TAG=""
+	hg clone $REPO/ openjdk
+fi
+hg clone $REPO/corba/ openjdk/corba $TAG
+hg clone $REPO/hotspot/ openjdk/hotspot $TAG
+hg clone $REPO/jaxp/ openjdk/jaxp $TAG
+hg clone $REPO/jaxws/ openjdk/jaxws $TAG
+hg clone $REPO/jdk/ openjdk/jdk $TAG
+hg clone $REPO/langtools/ openjdk/langtools $TAG
+find openjdk -name ".hg" -o -name ".hgtags" -o -name ".hgignore" |xargs rm -rf
+tar cf "$D"/openjdk-icedtea-$VERSION.tar openjdk
+xz -9e "$D"/openjdk-icedtea-$VERSION.tar
+cd /
+rm -rf $TMP

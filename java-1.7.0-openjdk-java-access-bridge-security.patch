@@ -1,23 +1,21 @@
 diff -up openjdk/jdk/src/share/lib/security/java.security.sav openjdk/jdk/src/share/lib/security/java.security
 --- openjdk/jdk/src/share/lib/security/java.security.sav	2013-02-01 17:34:10.750939826 -0500
 +++ openjdk/jdk/src/share/lib/security/java.security	2013-02-01 17:36:09.283198885 -0500
-@@ -129,7 +129,9 @@ package.access=sun.,\
-                com.sun.org.apache.xerces.internal.utils.,\
-                com.sun.org.apache.xalan.internal.utils.,\
-                com.sun.org.glassfish.external.,\
--               com.sun.org.glassfish.gmbal.
-+               com.sun.org.glassfish.gmbal.,\
+@@ -129,6 +129,8 @@ package.access=sun.,\
+                com.sun.org.apache.xml.internal.serializer.utils.,\
+                com.sun.org.apache.xml.internal.utils.,\
+-               com.sun.org.glassfish.
++               com.sun.org.glassfish.,\
 +               org.GNOME.Accessibility.,\
 +               org.GNOME.Bonobo.
  
  #
  # List of comma-separated packages that start with or equal this string
-@@ -147,7 +149,9 @@ package.definition=sun.,\
-                    com.sun.org.apache.xerces.internal.utils.,\
-                    com.sun.org.apache.xalan.internal.utils.,\
-                    com.sun.org.glassfish.external.,\
--                   com.sun.org.glassfish.gmbal.
-+                   com.sun.org.glassfish.gmbal.,\
+@@ -147,6 +149,8 @@ package.definition=sun.,\
+                    com.sun.org.apache.xml.internal.serializer.utils.,\
+                    com.sun.org.apache.xml.internal.utils.,\
+-                   com.sun.org.glassfish.
++                   com.sun.org.glassfish.,\
 +                   org.GNOME.Accessibility.,\
 +                   org.GNOME.Bonobo.
  
