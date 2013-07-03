@@ -10,7 +10,7 @@
 
 # If debug is 1, OpenJDK is built with all debug info present.
 
-%define icedtea_version 2.3.9
+%define icedtea_version 2.4.0
 %define hg_tag icedtea-{icedtea_version}
 
 %define accessmajorver 1.23
@@ -373,10 +373,6 @@ Patch236: bootstrap-javah-xbootclasspath.patch
 # mixer
 Patch300: pulse-soundproperties.patch
 
-# SystemTap support
-# Workaround for RH613824
-Patch302: systemtap.patch
-
 #Mageia patches
 Patch400: java-1.7.0-openjdk-fix-link.patch
 
@@ -565,11 +561,6 @@ cp %{SOURCE2} .
 # pulseaudio support
 %if %{with pulseaudio}
 %patch300
-%endif
-
-# Add systemtap patches if enabled
-%if %{with systemtap}
-%patch302
 %endif
 
 # Remove libraries that are linked
@@ -1311,6 +1302,8 @@ exit 0
 %{_jvmdir}/%{jredir}/lib/security/cacerts
 %config(noreplace) %{_jvmdir}/%{jredir}/lib/security/java.policy
 %config(noreplace) %{_jvmdir}/%{jredir}/lib/security/java.security
+%config(noreplace) %{_jvmdir}/%{jredir}/lib/security/US_export_policy.jar
+%config(noreplace) %{_jvmdir}/%{jredir}/lib/security/local_policy.jar
 %{_datadir}/icons/hicolor/*x*/apps/java-%{javaver}.png
 %{_mandir}/man1/java-%{name}.1*
 %{_mandir}/man1/keytool-%{name}.1*

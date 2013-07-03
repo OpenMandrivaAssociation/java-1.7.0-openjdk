@@ -1,23 +1,26 @@
-diff -up openjdk/jdk/src/share/lib/security/java.security.sav openjdk/jdk/src/share/lib/security/java.security
---- openjdk/jdk/src/share/lib/security/java.security.sav	2013-02-01 17:34:10.750939826 -0500
-+++ openjdk/jdk/src/share/lib/security/java.security	2013-02-01 17:36:09.283198885 -0500
-@@ -129,6 +129,8 @@ package.access=sun.,\
+--- openjdk/jdk/src/share/lib/security/java.security-linux.btp3~	2013-07-03 22:50:44.812925181 +0200
++++ openjdk/jdk/src/share/lib/security/java.security-linux	2013-07-03 22:53:40.194930673 +0200
+@@ -151,7 +151,10 @@ package.access=sun.,\
                 com.sun.org.apache.xml.internal.serializer.utils.,\
                 com.sun.org.apache.xml.internal.utils.,\
--               com.sun.org.glassfish.
-+               com.sun.org.glassfish.,\
+                com.sun.org.glassfish.,\
+-               oracle.jrockit.jfr.
++               oracle.jrockit.jfr.,\
 +               org.GNOME.Accessibility.,\
 +               org.GNOME.Bonobo.
- 
++
  #
  # List of comma-separated packages that start with or equal this string
-@@ -147,6 +149,8 @@ package.definition=sun.,\
+ # will cause a security exception to be thrown when
+@@ -186,7 +189,10 @@ package.definition=sun.,\
                     com.sun.org.apache.xml.internal.serializer.utils.,\
                     com.sun.org.apache.xml.internal.utils.,\
--                   com.sun.org.glassfish.
-+                   com.sun.org.glassfish.,\
+                    com.sun.org.glassfish.,\
+-                   oracle.jrockit.jfr.
++                   oracle.jrockit.jfr.,\
 +                   org.GNOME.Accessibility.,\
 +                   org.GNOME.Bonobo.
- 
++
  #
  # Determines whether this properties file can be appended to
+ # or overridden on the command line via -Djava.security.properties
