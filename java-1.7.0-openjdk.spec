@@ -564,7 +564,10 @@ cp %{SOURCE2} .
 %endif
 
 # Remove libraries that are linked
-sh %{SOURCE10}
+# (Unless we already removed them from the source tarball)
+if [ -d openjdk/jdk/src/share/native/java/util/zip/zlib-* ]; then
+	sh %{SOURCE10}
+fi
 
 # Copy jaxp, jaf and jaxws drops
 mkdir drops/
