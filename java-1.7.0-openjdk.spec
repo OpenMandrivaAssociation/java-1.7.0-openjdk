@@ -10,7 +10,7 @@
 
 # If debug is 1, OpenJDK is built with all debug info present.
 
-%define icedtea_version 2.4.0
+%define icedtea_version 2.4.1
 %define hg_tag icedtea-{icedtea_version}
 
 %define accessmajorver 1.23
@@ -108,9 +108,9 @@
 
 # Standard JPackage naming and versioning defines.
 %define origin          openjdk
-%define buildver        6
-# Keep priority on 6digits in case buildver>9
-%define priority 17000%{buildver}
+%define buildver        11
+# Keep priority on 6digits in case buildver<10
+%define priority 1700%{buildver}
 %define javaver         1.7.0
 
 # Standard JPackage directories and symbolic links.
@@ -556,7 +556,7 @@ The OpenJDK API documentation.
 cp %{SOURCE2} .
 
 # OpenJDK patches
-%patch100
+%patch100 -p0 -b .rhino~
 
 # pulseaudio support
 %if %{with pulseaudio}
@@ -820,6 +820,9 @@ make \
   JPEG_CFLAGS="" \
   USE_SYSTEM_ZLIB="true" \
   ZLIB_LIBS="-lz" \
+  LCMS_CFLAGS="`pkg-config --cflags lcms2`" \
+  LCMS_LIBS="`pkg-config --libs lcms2`" \
+  USE_SYSTEM_LCMS="true" \
   DEBUG_CLASSFILES="true" \
   DEBUG_BINARIES="true" \
 %ifnarch %{jit_arches}
