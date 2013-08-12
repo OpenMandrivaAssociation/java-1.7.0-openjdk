@@ -5,3 +5,10 @@ addFilter("E: binary-or-shlib-defines-rpath")
 addFilter("E: invalid-soname")
 # Those are fully intentional to save space
 addFilter("W: cross-directory-hard-link")
+# Intentional, Java requires a slightly weird directory structure
+addFilter("E: hardcoded-library-path")
+addFilter("W: configure-without-libdir-spec")
+# Patches are actually being applied, just not through the %patch mechanism
+addFilter("W: patch-not-applied")
+# Not great, but...
+addFilter("W: mixed-use-of-spaces-and-tabs")

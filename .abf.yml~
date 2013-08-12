@@ -1,0 +1,13 @@
+removed_sources:
+  openjdk-icedtea-2.3.7.tar.gz: 067f3f601edeef74d1d45fbdf89fd26298136475
+  openjdk-icedtea-2.3.9.tar.xz: 5eb9e906fb00e554efc7cd25122e6faeaeaee5d9
+sources:
+  class-rewriter.tar.gz: fcc167de17354efb6e52cb387eb3e7dbb0316b53
+  desktop-files.tar.gz: a00b1c0e3771be7c3fcd2dad68f286d735a74b57
+  generated-files.tar.gz: 1c1ed29cbb052d9325b581c021be5cfea44b0d0b
+  java-access-bridge-1.23.0.tar.bz2: aa2c61cc73bad1e1a09e8843f341270f70921dbf
+  mauve-2008-10-22.tar.gz: fa8c388e2beb24f5eaebe57677c9843ce6c39441
+  openjdk-icedtea-2.4.0.tar.xz: 099b909a91bcd9c5d008eb528f1707d828806b52
+  pulseaudio.tar.gz: fb72b6b1f4735ad9b5799d0b5058b0b1dec67b17
+  systemtap-tapset.tar.gz: 0fb5d256a36c22e47f663738098e4f345a25ea98
+  tmp-patches-java-1.7.0-openjdk-f17.tar.gz: c92657e0e47e7465615e882d02c3391cb152fef9

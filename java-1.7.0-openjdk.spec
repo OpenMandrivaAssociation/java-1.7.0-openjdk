@@ -689,7 +689,7 @@ patch -l -p0 -b -z .dbg2~ < %{PATCH6}
 # Type fixes for s390
 %ifarch s390 s390x
  patch -l -p0 -b -z .s390~ < %{PATCH101}
-#patch -l -p0 < %{PATCH102} # size_t patch disabled for now as it has conflicts
+#patch -l -p0 < PATCH102 # size_t patch disabled for now as it has conflicts
 %endif
 
 # Arm fixes
