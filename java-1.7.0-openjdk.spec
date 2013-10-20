@@ -10,7 +10,7 @@
 
 # If debug is 1, OpenJDK is built with all debug info present.
 
-%define icedtea_version 2.4.1
+%define icedtea_version 2.4.2
 %define hg_tag icedtea-{icedtea_version}
 
 %define accessmajorver 1.23
