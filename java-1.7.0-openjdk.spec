@@ -238,17 +238,6 @@ Patch6:   %{name}-debuginfo.patch
 
 Patch100: rhino.patch
 
-# Type fixing for s390
-Patch101: %{name}-bitmap.patch
-Patch102: %{name}-size_t.patch
-
-# Patches for Arm
-Patch103: %{name}-arm-fixes.patch
-
-# Patch for PPC/PPC64
-Patch104: %{name}-ppc-zero-jdk.patch
-Patch105: %{name}-ppc-zero-hotspot.patch
-
 Patch106: %{name}-freetype-check-fix.patch
 #
 # Bootstrap patches (code with this is never shipped)
@@ -686,24 +675,7 @@ patch -l -p0 -b -z .dbg1~ < %{PATCH5}
 patch -l -p0 -b -z .dbg2~ < %{PATCH6}
 %endif
 
-# Type fixes for s390
-%ifarch s390 s390x
- patch -l -p0 -b -z .s390~ < %{PATCH101}
-#patch -l -p0 < %{PATCH102} # size_t patch disabled for now as it has conflicts
-%endif
-
-# Arm fixes
-%ifarch %{arm}
-patch -l -p0 -b -z .arm~ < %{PATCH103}
-%endif
-
 patch -l -p0 -b -z .p106~ < %{PATCH106}
-
-%ifarch ppc ppc64
-# PPC fixes
-patch -l -p0 -b -z .ppc0~ < %{PATCH104}
-patch -l -p0 -b -z .ppc1~ < %{PATCH105}
-%endif
 
 # Add a "-icedtea" tag to the version
 sed -i "s#BUILD_VARIANT_RELEASE)#BUILD_VARIANT_RELEASE)-icedtea#" openjdk/jdk/make/common/shared/Defs.gmk
