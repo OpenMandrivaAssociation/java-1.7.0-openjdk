@@ -1,6 +1,6 @@
---- openjdk/jdk/src/share/lib/security/java.security-linux.btp3~	2013-08-10 11:58:48.093307473 +0200
-+++ openjdk/jdk/src/share/lib/security/java.security-linux	2013-08-10 12:01:53.612988158 +0200
-@@ -154,7 +154,9 @@ package.access=sun.,\
+--- openjdk/jdk/src/share/lib/security/java.security-linux.orig
++++ openjdk/jdk/src/share/lib/security/java.security-linux
+@@ -154,7 +154,9 @@
                 com.sun.org.apache.xml.internal.security.,\
                 com.sun.org.glassfish.,\
                 org.jcp.xml.dsig.internal.,\
@@ -11,7 +11,7 @@
  #
  # List of comma-separated packages that start with or equal this string
  # will cause a security exception to be thrown when
-@@ -192,7 +194,9 @@ package.definition=sun.,\
+@@ -192,7 +194,9 @@
                     com.sun.org.apache.xml.internal.security.,\
                     com.sun.org.glassfish.,\
                     org.jcp.xml.dsig.internal.,\
