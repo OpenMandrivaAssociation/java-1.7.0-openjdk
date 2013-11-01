@@ -1,4 +1,4 @@
-%define _disable_ld_no_undefined 1
+pkgconfig(xrender)%define _disable_ld_no_undefined 1
 
 # If debug is 1, OpenJDK is built with all debug info present.
 %global debug 0
@@ -289,6 +289,7 @@ BuildRequires: desktop-file-utils
 BuildRequires: giflib-devel
 BuildRequires: pkgconfig(lcms2)
 BuildRequires: pkgconfig(xi)
+BuildRequires: pkgconfig(xrender)
 BuildRequires: pkgconfig(xt)
 BuildRequires: pkgconfig(xtst)
 BuildRequires: jpeg-devel
