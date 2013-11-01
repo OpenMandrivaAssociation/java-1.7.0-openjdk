@@ -1,4 +1,4 @@
-pkgconfig(xrender)%define _disable_ld_no_undefined 1
+%define _disable_ld_no_undefined 1
 
 # If debug is 1, OpenJDK is built with all debug info present.
 %global debug 0
