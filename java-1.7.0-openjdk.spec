@@ -638,9 +638,9 @@ make \
   UNLIMITED_CRYPTO=true \
 %endif
   ANT="/usr/bin/ant" \
-  DISTRO_NAME="Fedora" \
+  DISTRO_NAME="%{product_vendor}" \
 %ifarch %{arm}
-  DISTRO_PACKAGE_VERSION="fedora-%{release}-%{_arch} u25-b33" \
+  DISTRO_PACKAGE_VERSION="%{_vendor}-%{release}-%{_arch} u25-b33" \
   JDK_UPDATE_VERSION="25" \
   JDK_BUILD_NUMBER=b`printf "%02d" 33` \
 %else
