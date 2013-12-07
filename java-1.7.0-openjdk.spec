@@ -1,7 +1,8 @@
 %define _disable_ld_no_undefined 1
 
-# If debug is 1, OpenJDK is built with all debug info present.
-%global debug 0
+# If enabled, OpenJDK is built with all debug info present.
+%bcond_with debug
+%bcond_without pulseaudio
 
 %global icedtea_version 2.4.3
 %global icedtea_version_arm32 2.3.13
@@ -71,7 +72,7 @@
 %global archinstall %{_arch}
 %endif
 
-%if %{debug}
+%if %{with debug}
 %global debugbuild debug_build
 %else
 %global debugbuild %{nil}
@@ -79,12 +80,10 @@
 
 %global buildoutputdir openjdk/build/linux-%{archbuild}
 
-%global with_pulseaudio 1
-
 %ifarch %{jit_arches}
-%global with_systemtap 1
+%bcond_without systemtap
 %else
-%global with_systemtap 0
+%bcond_with systemtap
 %endif
 
 # Convert an absolute path to a relative path.  Each symbolic link is
@@ -186,6 +185,8 @@ URL:      http://openjdk.java.net/
 Source0:  openjdk-icedtea-%{icedtea_version}.tar.xz
 #for arm is used icedtea7-forest-2.3 and fsg.sh is not run
 Source100:  openjdk-icedtea-%{icedtea_version_arm32}.tar.xz
+# Used to create SOURCE0/SOURCE100, not used during build process
+Source101:  create-openjdk-icedtea-tarball
 
 # README file
 # This source is under maintainer's/java-team's control
@@ -345,13 +346,6 @@ Provides: java = %{epoch}:%{javaver}
 # Standard JPackage extensions provides.
 Provides: java-fonts = %{epoch}:%{version}
 
-# Obsolete older 1.6 packages as it cannot use the new bytecode
-Obsoletes: java-1.6.0-openjdk
-Obsoletes: java-1.6.0-openjdk-demo
-Obsoletes: java-1.6.0-openjdk-devel
-Obsoletes: java-1.6.0-openjdk-javadoc
-Obsoletes: java-1.6.0-openjdk-src
-
 %description
 The OpenJDK runtime environment.
 
@@ -485,12 +479,12 @@ cp %{SOURCE2} .
 %endif
 
 # pulseaudio support
-%if %{with_pulseaudio}
+%if %{with pulseaudio}
 %patch300
 %endif
 
 # Add systemtap patches if enabled
-%if %{with_systemtap}
+%if %{with systemtap}
 %ifarch %{arm}
 %patch302
 %endif
@@ -506,7 +500,7 @@ mkdir drops/
 tar xzf %{SOURCE5}
 
 # Extract systemtap tapsets
-%if %{with_systemtap}
+%if %{with systemtap}
 
 tar xzf %{SOURCE6}
 
@@ -528,7 +522,7 @@ done
 %endif
 
 # Pulseaudio
-%if %{with_pulseaudio}
+%if %{with pulseaudio}
 tar xzf %{SOURCE9}
 %endif
 
@@ -539,7 +533,7 @@ tar xzf %{SOURCE9}
 %endif
 %patch4
 
-%if %{debug}
+%if %{with debug}
 %patch5
 %patch6
 %endif
@@ -696,7 +690,7 @@ cat %{SOURCE13} | sed -e s:@JAVA_PATH@:%{_jvmdir}/%{sdkdir}/jre-abrt/bin/java:g 
 chmod 755 $JAVA_HOME/jre/bin/java
 
 # Build pulseaudio and install it to JDK build location
-%if %{with_pulseaudio}
+%if %{with pulseaudio}
 pushd pulseaudio
 make JAVA_HOME=$JAVA_HOME -f Makefile.pulseaudio
 cp -pPRf build/native/libpulse-java.so $JAVA_HOME/jre/lib/%{archinstall}/
@@ -1063,17 +1057,6 @@ update-desktop-database %{_datadir}/applications &> /dev/null || :
 
 exit 0
 
-%postun
-update-desktop-database %{_datadir}/applications &> /dev/null || :
-
-if [ $1 -eq 0 ] ; then
-    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-    /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-fi
-
-exit 0
-
-
 %postun headless
   alternatives --remove java %{jrebindir}/java
   alternatives --remove jre_%{origin} %{_jvmdir}/%{jredir}
@@ -1081,9 +1064,6 @@ exit 0
   alternatives --remove jre_%{javaver}_%{origin} %{_jvmdir}/%{jrelnk}
 
 exit 0
-
-%posttrans 
-/usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 %post devel
 # Note current status of alternatives
@@ -1258,19 +1238,7 @@ exit 0
   alternatives --remove java_sdk_%{origin} %{_jvmdir}/%{sdkdir}
   alternatives --remove java_sdk_%{javaver} %{_jvmdir}/%{sdkdir}
   alternatives --remove java_sdk_%{javaver}_%{origin} %{_jvmdir}/%{sdkdir}
-
-update-desktop-database %{_datadir}/applications &> /dev/null || :
-
-if [ $1 -eq 0 ] ; then
-    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-    /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-fi
-
 exit 0
-
-%posttrans  devel
-/usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-
 
 %post javadoc
 MAKE_THIS_DEFAULT=0
