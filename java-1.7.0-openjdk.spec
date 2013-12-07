@@ -163,7 +163,7 @@ Release: %{icedtea_version}.1%{?dist}
 # provides >= 1.6.0 must specify the epoch, "java >= 1:1.6.0".
 Epoch:   1
 Summary: OpenJDK Runtime Environment
-#Group:
+Group: Development/Java
 
 License:  ASL 1.1 and ASL 2.0 and GPL+ and GPLv2 and GPLv2 with exceptions and LGPL+ and LGPLv2 and MPLv1.0 and MPLv1.1 and Public Domain and W3C
 URL:      http://openjdk.java.net/
@@ -351,7 +351,7 @@ The OpenJDK runtime environment.
 
 %package headless
 Summary: The OpenJDK runtime environment without audio and video support
-#Group
+Group: Development/Java
 
 Requires: lcms2
 Requires: rhino
@@ -391,7 +391,7 @@ The OpenJDK runtime environment without audio and video
 
 %package devel
 Summary: OpenJDK Development Environment
-#Group
+Group: Development/Java
 
 # Require base package.
 Requires:         %{name} = %{epoch}:%{version}-%{release}
@@ -415,7 +415,7 @@ The OpenJDK development tools.
 
 %package demo
 Summary: OpenJDK Demos
-#Group
+Group: Development/Java
 Requires: %{name} = %{epoch}:%{version}-%{release}
 
 %description demo
@@ -423,7 +423,7 @@ The OpenJDK demos.
 
 %package src
 Summary: OpenJDK Source Bundle
-#Group
+Group: Development/Java
 
 Requires: %{name} = %{epoch}:%{version}-%{release}
 
@@ -432,7 +432,7 @@ The OpenJDK source bundle.
 
 %package javadoc
 Summary: OpenJDK API Documentation
-#Group
+Group: Development/Java
 Requires: jpackage-utils
 BuildArch: noarch
 
