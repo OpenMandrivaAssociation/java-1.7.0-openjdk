@@ -4,7 +4,6 @@ ZIP_SRC=openjdk/jdk/src/share/native/java/util/zip/zlib-*
 JPEG_SRC=openjdk/jdk/src/share/native/sun/awt/image/jpeg/jpeg-6b
 GIF_SRC=openjdk/jdk/src/share/native/sun/awt/giflib
 PNG_SRC=openjdk/jdk/src/share/native/sun/awt/libpng
-LCMS_SRC=openjdk/jdk/src/share/native/sun/java2d/cmm/lcms
 
 echo "Removing built-in libs (they will be linked)"
 
@@ -80,37 +79,4 @@ if [ ! -d ${PNG_SRC} ]; then
 	exit 1
 fi	
 rm -rvf ${PNG_SRC}
-
-echo "Removing lcms"
-if [ ! -d ${LCMS_SRC} ]; then
-	echo "${LCMS_SRC} does not exist. Refusing to proceed."
-	exit 1
-fi
-rm -vf ${LCMS_SRC}/cmscam02.c
-rm -vf ${LCMS_SRC}/cmscgats.c
-rm -vf ${LCMS_SRC}/cmscnvrt.c
-rm -vf ${LCMS_SRC}/cmserr.c
-rm -vf ${LCMS_SRC}/cmsgamma.c
-rm -vf ${LCMS_SRC}/cmsgmt.c
-rm -vf ${LCMS_SRC}/cmsintrp.c
-rm -vf ${LCMS_SRC}/cmsio0.c
-rm -vf ${LCMS_SRC}/cmsio1.c
-rm -vf ${LCMS_SRC}/cmslut.c
-rm -vf ${LCMS_SRC}/cmsmd5.c
-rm -vf ${LCMS_SRC}/cmsmtrx.c
-rm -vf ${LCMS_SRC}/cmsnamed.c
-rm -vf ${LCMS_SRC}/cmsopt.c
-rm -vf ${LCMS_SRC}/cmspack.c
-rm -vf ${LCMS_SRC}/cmspcs.c
-rm -vf ${LCMS_SRC}/cmsplugin.c
-rm -vf ${LCMS_SRC}/cmsps2.c
-rm -vf ${LCMS_SRC}/cmssamp.c
-rm -vf ${LCMS_SRC}/cmssm.c
-rm -vf ${LCMS_SRC}/cmstypes.c
-rm -vf ${LCMS_SRC}/cmsvirt.c
-rm -vf ${LCMS_SRC}/cmswtpnt.c
-rm -vf ${LCMS_SRC}/cmsxform.c
-rm -vf ${LCMS_SRC}/lcms2.h
-rm -vf ${LCMS_SRC}/lcms2_internal.h
-rm -vf ${LCMS_SRC}/lcms2_plugin.h
 

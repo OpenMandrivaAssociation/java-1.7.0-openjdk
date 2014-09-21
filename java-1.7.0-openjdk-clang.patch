@@ -1,0 +1,11 @@
+--- openjdk/hotspot/make/linux/makefiles/gcc.make.orig	2014-09-21 13:05:01.773193926 +0100
++++ openjdk/hotspot/make/linux/makefiles/gcc.make	2014-09-21 13:05:21.484331973 +0100
+@@ -178,7 +178,7 @@
+ 
+ # Flags for generating make dependency flags.
+ ifneq ("${CC_VER_MAJOR}", "2")
+-DEPFLAGS = -fpch-deps -MMD -MP -MF $(DEP_DIR)/$(@:%=%.d)
++DEPFLAGS = -MMD -MP -MF $(DEP_DIR)/$(@:%=%.d)
+ endif
+ 
+ # -DDONT_USE_PRECOMPILED_HEADER will exclude all includes in precompiled.hpp.

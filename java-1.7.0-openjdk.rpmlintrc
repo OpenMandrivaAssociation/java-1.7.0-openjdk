@@ -12,3 +12,5 @@ addFilter("W: configure-without-libdir-spec")
 addFilter("W: patch-not-applied")
 # Not great, but...
 addFilter("W: mixed-use-of-spaces-and-tabs")
+# false positive
+addFilter("E: devel-file-in-non-devel-package")

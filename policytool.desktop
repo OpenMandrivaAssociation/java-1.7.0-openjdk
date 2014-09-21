@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=OpenJDK Policy Tool x86_64-2.4.3.1
+Comment=Manage OpenJDK policy files for x86_64-2.4.3.1
+Exec=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.60-2.4.3.1.x86_64/bin//policytool
+Icon=java-1.7.0
+Terminal=false
+Type=Application
+StartupWMClass=sun-security-tools-PolicyTool
+Categories=Development;Java;
+Version=1.0
