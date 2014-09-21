@@ -303,6 +303,7 @@ BuildRequires: x11-font-type1
 BuildRequires: pkgconfig(zlib)
 BuildRequires: java-1.7.0-openjdk-devel
 BuildRequires: pkgconfig(atspi-2)
+BuildRequires: pkgconfig(gtk+-2.0)
 BuildRequires: gawk
 # PulseAudio build requirements.
 %if %{with pulseaudio}
@@ -841,10 +842,13 @@ NOT_HEADLESS=\
 "%{_jvmdir}/%{uniquesuffix}/jre/lib/%{archinstall}/libjsoundalsa.so 
 %{_jvmdir}/%{uniquesuffix}/jre/lib/%{archinstall}/libpulse-java.so 
 %{_jvmdir}/%{uniquesuffix}/jre/lib/%{archinstall}/libsplashscreen.so 
+%{_jvmdir}/%{uniquesuffix}/jre/lib/%{archinstall}/libjavagtk.so
 %{_jvmdir}/%{uniquesuffix}/jre/lib/%{archinstall}/xawt/libmawt.so
+%{_jvmdir}/%{uniquesuffix}/jre/bin/policytool
 %{_jvmdir}/%{uniquesuffix}/jre-abrt/lib/%{archinstall}/libjsoundalsa.so 
 %{_jvmdir}/%{uniquesuffix}/jre-abrt/lib/%{archinstall}/libpulse-java.so 
 %{_jvmdir}/%{uniquesuffix}/jre-abrt/lib/%{archinstall}/libsplashscreen.so 
+%{_jvmdir}/%{uniquesuffix}/jre-abrt/lib/%{archinstall}/libjavagtk.so
 %{_jvmdir}/%{uniquesuffix}/jre-abrt/lib/%{archinstall}/xawt/libmawt.so"
 #filter  %{name}.files from  %{name}.files.all to  %{name}.files-headless
 ALL=`cat %{name}.files.all`
