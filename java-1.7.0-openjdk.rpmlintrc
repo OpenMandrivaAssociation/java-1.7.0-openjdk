@@ -5,3 +5,5 @@ addFilter("E: binary-or-shlib-defines-rpath")
 addFilter("E: invalid-soname")
 # Those are fully intentional to save space
 addFilter("W: cross-directory-hard-link")
+# false positive
+addFilter("E: devel-file-in-non-devel-package")
