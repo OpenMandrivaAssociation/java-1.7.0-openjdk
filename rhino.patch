@@ -140,9 +140,9 @@ diff -ur openjdk.orig/jdk/src/share/classes/com/sun/script/javascript/RhinoTopLe
  
 -import sun.org.mozilla.javascript.internal.*;
 +import sun.org.mozilla.javascript.*;
- import java.security.AccessControlContext;
  import javax.script.*;
  import java.security.AccessControlContext;
+ 
 diff -ur openjdk.orig/jdk/src/share/classes/com/sun/script/javascript/RhinoWrapFactory.java openjdk/jdk/src/share/classes/com/sun/script/javascript/RhinoWrapFactory.java
 --- openjdk.orig/jdk/src/share/classes/com/sun/script/javascript/RhinoWrapFactory.java	2012-02-14 16:12:49.000000000 -0500
 +++ openjdk/jdk/src/share/classes/com/sun/script/javascript/RhinoWrapFactory.java	2012-02-22 14:10:53.327225198 -0500

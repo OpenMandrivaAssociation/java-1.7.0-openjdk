@@ -1,8 +1,11 @@
 #!/bin/sh
 cd `dirname $0`
 D=`pwd`
-VERSION=`cat java-1.7.0-openjdk.spec |grep "define icedtea_version" |cut -d" " -f3-`
+VERSION=`cat java-1.7.0-openjdk.spec |grep "global icedtea_version" |cut -d" " -f3-`
 MAJOR=`echo $VERSION |cut -d. -f1-2`
+
+echo $VERSION
+echo $MAJOR
 
 if curl http://icedtea.classpath.org/hg/release/icedtea7-forest-$MAJOR >/dev/null; then
 	REPO=http://icedtea.classpath.org/hg/release/icedtea7-forest-$MAJOR

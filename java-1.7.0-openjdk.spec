@@ -4,8 +4,7 @@
 %bcond_with debug
 %bcond_without pulseaudio
 
-%global icedtea_version 2.4.3
-%global icedtea_version_arm32 2.3.13
+%global icedtea_version 2.5.2
 %global hg_tag icedtea-{icedtea_version}
 
 %global aarch64			aarch64 arm64 armv8
@@ -105,9 +104,9 @@
 
 # Standard JPackage naming and versioning defines.
 %global origin          openjdk
-%global updatever       45
+%global updatever       65
 #Fedora have an bogus 60 instead of updatever. Fix when updatever>=60 in version:
-%global buildver        15
+%global buildver        32
 # Keep priority on 6digits in case updatever>9
 %global priority        1700%{updatever}
 %global javaver         1.7.0
@@ -150,7 +149,7 @@
 %global __jar_repack 0
 
 Name:    java-%{javaver}-%{origin}
-Version: %{javaver}.60
+Version: %{javaver}.%{updatever}
 Release: %{icedtea_version}.1%{?dist}
 # java-1.5.0-ibm from jpackage.org set Epoch to 1 for unknown reasons,
 # and this change was brought into RHEL-4.  java-1.5.0-ibm packages
@@ -183,8 +182,6 @@ URL:      http://openjdk.java.net/
 # sh /git/java-1.7.0-openjdk/fX/fsg.sh
 # tar cJf openjdk-icedtea-%{icedtea_version}.tar.xz openjdk
 Source0:  openjdk-icedtea-%{icedtea_version}.tar.xz
-#for arm is used icedtea7-forest-2.3 and fsg.sh is not run
-Source100:  openjdk-icedtea-%{icedtea_version_arm32}.tar.xz
 # Used to create SOURCE0/SOURCE100, not used during build process
 Source101:  create-openjdk-icedtea-tarball
 
@@ -249,7 +246,6 @@ Patch6:   %{name}-debuginfo.patch
 
 # Add rhino support
 Patch100: rhino.patch
-Patch1000: rhino-2.3.patch
 
 
 # Patch for PPC/PPC64
@@ -276,8 +272,6 @@ Patch302: systemtap.patch
 #Workaround RH947731
 Patch401: 657854-openjdk7.patch
 #Workaround RH902004
-Patch402: gstackbounds.patch
-Patch4020: gstackbounds-2.3.patch
 Patch403: PStack-808293.patch
 # End of tmp patches
 
@@ -308,7 +302,7 @@ BuildRequires: pkgconfig(fontconfig)
 BuildRequires: x11-font-type1
 BuildRequires: pkgconfig(zlib)
 BuildRequires: java-1.7.0-openjdk-devel
-BuildRequires: pkgconfig(libspi-1.0)
+BuildRequires: pkgconfig(atspi-2)
 BuildRequires: gawk
 # PulseAudio build requirements.
 %if %{with pulseaudio}
@@ -464,19 +458,11 @@ accessibility on, so do not rather install this package unless you
 really need.
 
 %prep
-%ifarch %{arm}
-%setup -q -c -n %{uniquesuffix} -T -a 100
-%else
 %setup -q -c -n %{uniquesuffix} -T -a 0
-%endif
 cp %{SOURCE2} .
 
 # OpenJDK patches
-%ifarch %{arm}
-%patch1000
-%else
 %patch100
-%endif
 
 # pulseaudio support
 %if %{with pulseaudio}
@@ -553,11 +539,6 @@ tar xzf %{SOURCE9}
 %endif
 
 %ifarch %{jit_arches}
-%ifarch %{arm}
-%patch4020
-%else
-%patch402
-%endif
 %patch403
 %endif
 
