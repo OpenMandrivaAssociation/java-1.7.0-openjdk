@@ -182,6 +182,7 @@ URL:      http://openjdk.java.net/
 # sh /git/java-1.7.0-openjdk/fX/fsg.sh
 # tar cJf openjdk-icedtea-%{icedtea_version}.tar.xz openjdk
 Source0:  openjdk-icedtea-%{icedtea_version}.tar.xz
+Source100: java-1.7.0-openjdk.rpmlintrc
 # Used to create SOURCE0/SOURCE100, not used during build process
 Source101:  create-openjdk-icedtea-tarball
 
