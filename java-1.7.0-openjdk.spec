@@ -4,7 +4,7 @@
 %bcond_with debug
 %bcond_without pulseaudio
 
-%global icedtea_version 2.5.2
+%global icedtea_version 2.5.3
 %global hg_tag icedtea-{icedtea_version}
 
 %global aarch64			aarch64 arm64 armv8
@@ -104,9 +104,9 @@
 
 # Standard JPackage naming and versioning defines.
 %global origin          openjdk
-%global updatever       65
+%global updatever       71
 #Fedora have an bogus 60 instead of updatever. Fix when updatever>=60 in version:
-%global buildver        32
+%global buildver        14
 # Keep priority on 6digits in case updatever>9
 %global priority        1700%{updatever}
 %global javaver         1.7.0
