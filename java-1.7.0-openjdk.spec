@@ -4,7 +4,7 @@
 %bcond_with debug
 %bcond_without pulseaudio
 
-%global icedtea_version 2.5.2
+%global icedtea_version 2.5.5
 %global hg_tag icedtea-{icedtea_version}
 
 %global aarch64			aarch64 arm64 armv8
@@ -104,9 +104,9 @@
 
 # Standard JPackage naming and versioning defines.
 %global origin          openjdk
-%global updatever       65
+%global updatever       79
 #Fedora have an bogus 60 instead of updatever. Fix when updatever>=60 in version:
-%global buildver        32
+%global buildver        14
 # Keep priority on 6digits in case updatever>9
 %global priority        1700%{updatever}
 %global javaver         1.7.0
@@ -150,7 +150,7 @@
 
 Name:    java-%{javaver}-%{origin}
 Version: %{javaver}.%{updatever}
-Release: %{icedtea_version}.1%{?dist}
+Release: %{icedtea_version}.2
 # java-1.5.0-ibm from jpackage.org set Epoch to 1 for unknown reasons,
 # and this change was brought into RHEL-4.  java-1.5.0-ibm packages
 # also included the epoch in their virtual provides.  This created a
@@ -550,6 +550,9 @@ tar xzf %{SOURCE9}
 %endif
 
 %build
+export CC=gcc
+export CXX=g++
+
 # How many cpu's do we have?
 %ifarch aarch64
 # temporary until real hardware lands
