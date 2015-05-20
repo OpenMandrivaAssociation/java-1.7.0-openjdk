@@ -243,6 +243,10 @@ Patch6:   %{name}-debuginfo.patch
 
 #Fix build with clang
 Patch7:   java-1.7.0-openjdk-clang.patch
+
+# http://bugs.java.com/view_bug.do?bug_id=8048214
+Patch8:   java-1.7.0-openjdk-fix_unresolved.patch
+
 #
 # OpenJDK specific patches
 #
@@ -531,6 +535,8 @@ tar xzf %{SOURCE9}
 %if %mdvver >= 201500
 %patch7
 %endif
+
+%patch8
 
 %patch106
 %patch200
