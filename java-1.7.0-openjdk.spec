@@ -282,6 +282,8 @@ Patch401: 657854-openjdk7.patch
 Patch403: PStack-808293.patch
 # End of tmp patches
 
+Patch500: 1208369_memory_leak_gcc5.patch
+
 BuildRequires: autoconf
 BuildRequires: automake
 BuildRequires: gcc-c++
@@ -554,6 +556,8 @@ tar xzf %{SOURCE9}
 %ifarch %{jit_arches}
 %patch403
 %endif
+
+%patch500
 
 %build
 export CC=gcc
