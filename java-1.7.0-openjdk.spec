@@ -284,6 +284,7 @@ Patch403: PStack-808293.patch
 
 Patch500: 1208369_memory_leak_gcc5.patch
 
+BuildRequires: attr-devel
 BuildRequires: autoconf
 BuildRequires: automake
 BuildRequires: gcc-c++
