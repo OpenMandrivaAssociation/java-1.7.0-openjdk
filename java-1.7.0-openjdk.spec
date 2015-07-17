@@ -287,6 +287,7 @@ BuildRequires: cups-devel
 BuildRequires: desktop-file-utils
 BuildRequires: giflib-devel
 BuildRequires: pkgconfig(lcms2)
+BuildRequires: pkgconfig(libpcsclite)
 BuildRequires: pkgconfig(xi)
 BuildRequires: pkgconfig(xrender)
 BuildRequires: pkgconfig(xt)
