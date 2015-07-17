@@ -4,7 +4,7 @@
 %bcond_with debug
 %bcond_without pulseaudio
 
-%global icedtea_version 2.5.5
+%global icedtea_version 2.6.1
 %global hg_tag icedtea-{icedtea_version}
 
 %global aarch64			aarch64 arm64 armv8
@@ -104,9 +104,8 @@
 
 # Standard JPackage naming and versioning defines.
 %global origin          openjdk
-%global updatever       79
-#Fedora have an bogus 60 instead of updatever. Fix when updatever>=60 in version:
-%global buildver        14
+%global updatever       85
+%global buildver        01
 # Keep priority on 6digits in case updatever>9
 %global priority        1700%{updatever}
 %global javaver         1.7.0
@@ -150,7 +149,7 @@
 
 Name:    java-%{javaver}-%{origin}
 Version: %{javaver}.%{updatever}
-Release: %{icedtea_version}.4
+Release: %{icedtea_version}.1
 # java-1.5.0-ibm from jpackage.org set Epoch to 1 for unknown reasons,
 # and this change was brought into RHEL-4.  java-1.5.0-ibm packages
 # also included the epoch in their virtual provides.  This created a
@@ -244,9 +243,6 @@ Patch6:   %{name}-debuginfo.patch
 #Fix build with clang
 Patch7:   java-1.7.0-openjdk-clang.patch
 
-# http://bugs.java.com/view_bug.do?bug_id=8048214
-Patch8:   java-1.7.0-openjdk-fix_unresolved.patch
-
 #
 # OpenJDK specific patches
 #
@@ -281,8 +277,6 @@ Patch401: 657854-openjdk7.patch
 #Workaround RH902004
 Patch403: PStack-808293.patch
 # End of tmp patches
-
-Patch500: 1208369_memory_leak_gcc5.patch
 
 BuildRequires: attr-devel
 BuildRequires: autoconf
@@ -539,8 +533,6 @@ tar xzf %{SOURCE9}
 %patch7
 %endif
 
-%patch8
-
 %patch106
 %patch200
 
@@ -557,8 +549,6 @@ tar xzf %{SOURCE9}
 %ifarch %{jit_arches}
 %patch403
 %endif
-
-%patch500
 
 %build
 export CC=gcc
