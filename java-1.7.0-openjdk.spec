@@ -310,6 +310,7 @@ BuildRequires: java-1.7.0-openjdk-devel
 BuildRequires: pkgconfig(atspi-2)
 BuildRequires: pkgconfig(gtk+-2.0)
 BuildRequires: gawk
+BuildRequires: sctp-devel
 # PulseAudio build requirements.
 %if %{with pulseaudio}
 BuildRequires: pkgconfig(libpulse)
