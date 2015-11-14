@@ -2,8 +2,9 @@ removed_sources:
   openjdk-icedtea-2.5.2.tar.xz: 8fde471290e8f33a8b2546e793c87ed8fa8ef482
   openjdk-icedtea-2.5.3.tar.xz: 4f40efd710b3fa02a4919e9eb47761cbb0adbaf5
   openjdk-icedtea-2.5.5.tar.xz: 8722f1b2887b45b8930a872710c62470e506d376
+  openjdk-icedtea-2.6.1.tar.xz: 504c0744a7be09bf618e2a0719eda3c3182f8844
 sources:
   class-rewriter.tar.gz: fcc167de17354efb6e52cb387eb3e7dbb0316b53
-  openjdk-icedtea-2.6.1.tar.xz: 504c0744a7be09bf618e2a0719eda3c3182f8844
+  openjdk-icedtea-2.6.3.tar.xz: 4462a9c9047933df1a4f8fafd83e8630e7fb4d2f
   pulseaudio.tar.gz: fb72b6b1f4735ad9b5799d0b5058b0b1dec67b17
   systemtap-tapset-2013-10-02.tar.gz: 4708fedba257c5ba7aef6d416421bf207d190c5e
