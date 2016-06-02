@@ -4,7 +4,7 @@
 %bcond_with debug
 %bcond_without pulseaudio
 
-%global icedtea_version 2.6.5
+%global icedtea_version 2.6.6
 %global hg_tag icedtea-{icedtea_version}
 
 %global aarch64			aarch64 arm64 armv8
@@ -104,10 +104,10 @@
 
 # Standard JPackage naming and versioning defines.
 %global origin          openjdk
-%global updatever       99
+%global updatever       101
 %global buildver        00
 # Keep priority on 6digits in case updatever>9
-%global priority        1700%{updatever}
+%global priority        170%{updatever}
 %global javaver         1.7.0
 
 %global sdkdir          %{uniquesuffix}
@@ -359,8 +359,8 @@ Requires: rhino
 #Requires: libjpeg = 6b
 # Require /etc/pki/java/cacerts.
 Requires: rootcerts-java
-# Require jpackage-utils for ant.
-Requires: jpackage-utils >= 1.7.3-1jpp.2
+# Require javapackages-tools for ant.
+Requires: javapackages-tools >= 1.7.3-1jpp.2
 # Require zoneinfo data provided by tzdata-java subpackage.
 Requires: tzdata-java
 # Post requires alternatives to install tool alternatives.
@@ -434,7 +434,7 @@ The OpenJDK source bundle.
 %package javadoc
 Summary: OpenJDK API Documentation
 Group: Development/Java
-Requires: jpackage-utils
+Requires: javapackages-tools
 BuildArch: noarch
 
 # Post requires alternatives to install javadoc alternative.
