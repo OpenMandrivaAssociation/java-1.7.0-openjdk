@@ -1,5 +1,5 @@
 sources:
   class-rewriter.tar.gz: fcc167de17354efb6e52cb387eb3e7dbb0316b53
-  openjdk-icedtea-2.6.7.tar.xz: 5fd43471399674bd74492fe15f73671ab2ba196a
+  openjdk-icedtea-2.6.10.tar.xz: b0b9dd34ac08e01b48cea8d5bcd8364dbd670b7f
   pulseaudio.tar.gz: fb72b6b1f4735ad9b5799d0b5058b0b1dec67b17
   systemtap-tapset-2013-10-02.tar.gz: 4708fedba257c5ba7aef6d416421bf207d190c5e

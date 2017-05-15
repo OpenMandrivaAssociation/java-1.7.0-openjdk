@@ -4,7 +4,7 @@
 %bcond_with debug
 %bcond_without pulseaudio
 
-%global icedtea_version 2.6.7
+%global icedtea_version 2.6.10
 %global hg_tag icedtea-{icedtea_version}
 
 %global aarch64			aarch64 arm64 armv8
@@ -104,8 +104,8 @@
 
 # Standard JPackage naming and versioning defines.
 %global origin          openjdk
-%global updatever       111
-%global buildver        01
+%global updatever       141
+%global buildver        02
 # Keep priority on 6digits in case updatever>9
 %global priority        170%{updatever}
 %global javaver         1.7.0
