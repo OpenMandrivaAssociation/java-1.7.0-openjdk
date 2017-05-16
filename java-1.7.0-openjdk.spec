@@ -297,11 +297,10 @@ BuildRequires: pkgconfig(libpng)
 BuildRequires: wget
 BuildRequires: xsltproc
 BuildRequires: pkgconfig(xproto)
-BuildRequires: mercurial
 BuildRequires: ant
 BuildRequires: pkgconfig(xinerama)
 BuildRequires: rhino
-BuildRequires: lsb
+BuildRequires: lsb-release
 Buildrequires: zip
 BuildRequires: pkgconfig(fontconfig)
 BuildRequires: x11-font-type1
@@ -552,6 +551,9 @@ tar xzf %{SOURCE9}
 %patch403
 %endif
 
+# cb fix previous breakage, super hack here
+sudo -n chmod 644 /usr/lib/jvm/java-1.7.0-openjdk-*/jre/lib/resources.jar
+
 %build
 export CC=gcc
 export CXX=g++
@@ -652,6 +654,8 @@ make \
   DEBUG_CLASSFILES="true" \
   DEBUG_BINARIES="true" \
   STRIP_POLICY="no_strip" \
+  JAVAC_WARNINGS_FATAL="false" \
+  COMPILER_WARNINGS_FATAL="false" \
 %ifnarch %{jit_arches}
   LIBFFI_CFLAGS="`pkg-config --cflags libffi` " \
   LIBFFI_LIBS="-lffi " \
@@ -1301,6 +1305,7 @@ exit 0
 %endif
 %config(noreplace) %{_jvmdir}/%{jredir}/lib/security/java.policy
 %config(noreplace) %{_jvmdir}/%{jredir}/lib/security/java.security
+%config(noreplace) %{_jvmdir}/%{jredir}/lib/security/blacklisted.certs
 %{_mandir}/man1/java-%{uniquesuffix}.1*
 %{_mandir}/man1/keytool-%{uniquesuffix}.1*
 %{_mandir}/man1/orbd-%{uniquesuffix}.1*
