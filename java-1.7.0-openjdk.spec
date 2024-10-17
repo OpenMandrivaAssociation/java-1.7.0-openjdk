@@ -164,7 +164,7 @@ Summary: OpenJDK Runtime Environment
 Group: Development/Java
 
 License:  ASL 1.1 and ASL 2.0 and GPL+ and GPLv2 and GPLv2 with exceptions and LGPL+ and LGPLv2 and MPLv1.0 and MPLv1.1 and Public Domain and W3C
-URL:      http://openjdk.java.net/
+URL:      https://openjdk.java.net/
 
 #head
 #REPO=http://icedtea.classpath.org/hg/icedtea7-forest
